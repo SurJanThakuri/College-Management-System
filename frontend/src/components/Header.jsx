@@ -30,7 +30,11 @@ function Header({title}) {
 
     const handleLogoutConfirm = () => {
         // Add your logout logic here
+
         // For now, just close the popup
+        
+
+
         setShowLogoutPopup(false);
     };
 
@@ -39,8 +43,8 @@ function Header({title}) {
     };
 
     return (
-        <div>
-            <div className="w-full header h-14 rounded-b-xl mb-4 bg-white text-black flex justify-between items-center">
+        <div className=''>
+            <div className="w-full header h-14 p-0 m-0 mb-4 bg-[#F0F1F3] text-black flex justify-between items-center">
                 <div className='ml-8'>
                     <div className="title font-bold text-lg">
                         {title} Dashboard

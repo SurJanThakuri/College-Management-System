@@ -107,18 +107,18 @@ function Routine() {
         <div className='container min-w-full min-h-screen bg-[#F0F1F3]'>
             <div className="flex">
                 <Sidebar />
-                <div className="w-5/6 p-4 bg-[#F0F1F3] absolute right-0 pt-0">
+                <div className="w-5/6 p-4 bg-[#F0F1F3] md:absolute md:right-0 absolute right-8 pt-0">
                     <Header title="Admin" />
                     <div className="container min-w-full min-h-screen bg-[#FFFFFF]">
                         <div className="p-4 bg-[#FFFFFF]">
                             {loading ? (
                                 <div>Loading...</div>
                             ) : (
-                                <div>
+                                <div className="container text-xs md:text-base min-w-full min-h-screen bg-[#FFFFFF]">
                                     {routines.map((facultyRoutine, index) => (
                                         <div key={index}>
                                             <div className="flex justify-between items-center">
-                                                <h1 className="text-xl font-bold my-4">{facultyRoutine.semester} Semester - Class Routine</h1>
+                                                <h1 className="text-xl font-bold my-4">{facultyRoutine.semester} Semester</h1>
                                                 <div className="flex gap-3">
                                                     <Link to="/admin-dashboard/routines/BCA/add-class">
                                                         <Button children="Add Class" type='button' className='px-4' />
@@ -126,27 +126,22 @@ function Routine() {
                                                     
                                                 </div>
                                             </div>
+                                            <div className='overflow-x-scroll'>
                                             <table className="table-auto w-full mb-4">
                                                 <thead>
                                                     <tr>
-                                                        <th className="border px-4 py-2">Day/Time</th>
+                                                    <th className="border px-6 py-2">Action</th>
+                                                        <th className="border px-6 py-2">Day/Time</th>
                                                         {facultyRoutine.routine[0].classes.map((classDetail, index) => (
                                                             <th key={index} className="border px-4 py-2">{classDetail.time}</th>
 
                                                         ))}
-                                                        <th className="border px-4 py-2">Action</th>
+                                                        
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {facultyRoutine.routine.map((dayRoutine, dayIndex) => (
                                                         <tr key={dayIndex}>
-                                                            <td className="border px-4 py-2 text-center">{dayRoutine.day}</td>
-                                                            {dayRoutine.classes.map((classDetail, classIndex) => (
-                                                                <td key={classIndex} className="border px-4 py-2 text-center">
-                                                                    {classDetail.subject}<br />
-                                                                    {classDetail.teacher}
-                                                                </td>
-                                                            ))}
                                                             <td className="border px-4 py-5 flex items-center justify-center gap-2">
                                                                 <Link to={`/admin-dashboard/routines/BCA/edit-class`}>
                                                                     <img className='h-6' src="/images/edit-text.png" alt="" />
@@ -155,11 +150,19 @@ function Routine() {
                                                                     <img className='h-6' src="/images/delete.png" alt="" />
                                                                 </Link>
                                                             </td>
+                                                            <td className="border px-4 py-2 text-center">{dayRoutine.day}</td>
+                                                            {dayRoutine.classes.map((classDetail, classIndex) => (
+                                                                <td key={classIndex} className="border px-4 py-2 text-center">
+                                                                    {classDetail.subject}<br />
+                                                                    {classDetail.teacher}
+                                                                </td>
+                                                            ))}
+                                                            
                                                         </tr>
                                                     ))}
                                                 </tbody>
                                             </table>
-
+                                            </div>
                                         </div>
                                     ))}
                                 </div>

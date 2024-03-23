@@ -54,12 +54,12 @@ function EditPayment() {
         <div className='container min-w-full min-h-screen bg-[#F0F1F3]'>
             <div className="flex">
                 <Sidebar />
-                <div className="w-5/6 p-4 bg-[#F0F1F3] absolute right-0 pt-0">
+                <div className="w-5/6 p-4 bg-[#F0F1F3] md:absolute md:right-0 absolute right-8 pt-0">
                     <Header title="Admin" />
                     <div className="container min-w-full min-h-screen bg-[#FFFFFF]">
                         <div className="p-4 bg-[#FFFFFF] flex flex-col justify-center items-center">
                             <h1 className="text-2xl font-bold mb-2">Edit Payment</h1>
-                            <form onSubmit={handleSubmit(onSubmit)} className='w-1/2'>
+                            <form onSubmit={handleSubmit(onSubmit)} className='w-full md:w-1/2'>
                                 <InputField
                                     type="date"
                                     label="Date:"

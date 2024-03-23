@@ -90,39 +90,39 @@ function Payments() {
         <div className='container min-w-full min-h-screen bg-[#F0F1F3]'>
             <div className="flex">
                 <Sidebar />
-                <div className="w-5/6 p-4 bg-[#F0F1F3] absolute right-0 pt-0">
+                <div className="w-5/6 p-4 bg-[#F0F1F3] md:absolute md:right-0 absolute right-8 pt-0">
                     <Header title="Admin" />
                     <div className="container min-w-full min-h-screen bg-[#FFFFFF]">
                         <div className="p-4 bg-[#FFFFFF]">
                             <div className="flex justify-between items-center">
                             <div className="flex justify-center gap-8 items-center">
-                                    <h1 className="text-2xl font-bold mb-4">Student Fee Payment Logs</h1>
-                                    <SearchBar onSearch={handleSearch} />
+                                    <h1 className="text-2xl font-bold mb-4">Payment Logs</h1>
                                 </div>
                                 <Link to='/admin-dashboard/payments/add'>
-                                    <Button children="Add Payment" className='px-3' />
+                                    <Button children="Add" className='px-3' />
                                 </Link>
                             </div>
+                                    <SearchBar onSearch={handleSearch} />
                             <div className="overflow-x-auto">
                             <table className="table-auto border-collapse w-full">
                                     <thead>
                                         <tr>
-                                            <th className="border border-black bg-blue-500 text-white px-4 py-2">Date</th>
+                                            <th className="border border-black bg-blue-500 text-white px-4 py-2 hidden sm:table-cell">Date</th>
                                             <th className="border border-black bg-blue-500 text-white px-4 py-2">Name</th>
-                                            <th className="border border-black bg-blue-500 text-white px-4 py-2">Faculty</th>
-                                            <th className="border border-black bg-blue-500 text-white px-4 py-2">Semester</th>
-                                            <th className="border border-black bg-blue-500 text-white px-4 py-2">Amount</th>
+                                            <th className="border border-black bg-blue-500 text-white px-4 py-2  hidden md:table-cell">Faculty</th>
+                                            <th className="border border-black bg-blue-500 text-white px-4 py-2 hidden md:table-cell">Semester</th>
+                                            <th className="border border-black bg-blue-500 text-white px-4 py-2 hidden sm:table-cell">Amount</th>
                                             <th className="border border-black bg-blue-500 text-white px-4 py-2">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {paymentLogs.map(log => (
                                             <tr key={log.id}>
-                                                <td className="border border-black px-4 py-2">{log.date}</td>
+                                                <td className="border border-black px-4 py-2  hidden sm:table-cell">{log.date}</td>
                                                 <td className="border border-black px-4 py-2">{log.name}</td>
-                                                <td className="border border-black px-4 py-2">{log.faculty}</td>
-                                                <td className="border border-black px-4 py-2">{log.semester}</td>
-                                                <td className="border border-black px-4 py-2">{log.amount}</td>
+                                                <td className="border border-black px-4 py-2  hidden md:table-cell">{log.faculty}</td>
+                                                <td className="border border-black px-4 py-2  hidden md:table-cell">{log.semester}</td>
+                                                <td className="border border-black px-4 py-2  hidden sm:table-cell">{log.amount}</td>
                                                 <td className="border border-black px-4 py-2 flex gap-4 justify-center">
                                                     <Link to={`/admin-dashboard/payments/1/edit`}>
                                                         <img className='h-6' src="/images/edit-text.png" alt="" />

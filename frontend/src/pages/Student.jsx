@@ -65,9 +65,9 @@ function Student() {
         <div className='container min-w-full min-h-screen bg-[#F0F1F3]'>
             <div className="flex">
                 <Sidebar />
-                <div className="w-5/6 p-4 absolute right-0 pt-0">
+                <div className="w-5/6 p-4 md:absolute md:right-0 absolute right-8 pt-0">
                     <Header title="Admin" />
-                    <div className="flex justify-around bg-[#FFFFFF] p-4 md:p-12 text-center lg:text-left">
+                    <div className="flex flex-col md:flex-row justify-around bg-[#FFFFFF] p-4 md:p-12 lg:text-left">
                         <div>
                             <h1 className="text-3xl font-bold pt-8 lg:pt-0">{student.name}</h1>
                             <div className="flex mx-auto lg:mx-0 w-4/5 pt-3 border-b-2 border-blue-600 opacity-25"></div>
@@ -86,6 +86,7 @@ function Student() {
                             <p className="pt-4 text-base">
                                 <strong>Gender:</strong> {student.gender}
                             </p>
+                            
                             <p className="pt-4 text-base">
                                 <strong>Nationality:</strong> {student.nationality}
                             </p>

@@ -3,7 +3,7 @@ import React from 'react'
 function NoticeBoard() {
   return (
     <>
-       <div className="w-1/2 h-[30rem] bg-[#FFFFFF] p-6 pr-0.5 rounded shadow-md">
+       <div className="w-full h-[30rem] bg-[#FFFFFF] p-6 pr-0.5 rounded shadow-md">
                         <h2 className='font-bold text-2xl'>Notice Board</h2>
                         <hr className='h-1' />
                         <div className="notices w-full h-[95%] bg-[#FFFFFF] overflow-auto">

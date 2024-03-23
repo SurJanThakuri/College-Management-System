@@ -57,32 +57,31 @@ function Complaints() {
         <div className='container min-w-full min-h-screen bg-[#F0F1F3]'>
             <div className="flex">
                 <Sidebar />
-                <div className="w-5/6 p-4 bg-[#F0F1F3] absolute right-0 pt-0">
+                <div className="w-5/6 p-4 bg-[#F0F1F3] md:absolute md:right-0 absolute right-8 pt-0">
                     <Header title="Admin" />
                     <div className="container min-w-full min-h-screen bg-[#F0F1F3]">
                         <div className="p-2 bg-[#F0F1F3]">
                             <div className="my-2">
                                 <h1 className="text-2xl font-bold mb-4">Complaints</h1>
                                 <table className="min-w-full divide-y divide-gray-200">
-                                    {/* Table header */}
+                                   
                                     <thead className="bg-gray-50">
-                                        {/* Table row */}
+                                        
                                         <tr>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Complaints By</th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider  hidden md:table-cell">Date</th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">By</th>
                                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Complaint</th>
-                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">Status</th>
                                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                         </tr>
                                     </thead>
-                                    {/* Table body */}
                                     <tbody className="bg-white divide-y divide-gray-200">
                                         {complaintsToShow.map(complaint => (
                                             <tr key={complaint.id}>
-                                                <td className="px-6 py-4 whitespace-nowrap">{complaint.date}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap  hidden md:table-cell">{complaint.date}</td>
                                                 <td className="px-6 py-4 ">{complaint.by}</td>
                                                 <td className="px-6 py-4">{complaint.title}</td>
-                                                <td className="px-6 py-4 ">{complaint.status}</td>
+                                                <td className="px-6 py-4 hidden md:table-cell">{complaint.status}</td>
                                                 <td className="flex gap-2 justify-center items-center px-6 py-4">
                                                    <Link to='/admin-dashboard/notices/1/view'>
                                                    <img className='h-7' src="/images/eye.png" alt="" />

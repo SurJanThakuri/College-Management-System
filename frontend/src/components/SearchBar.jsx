@@ -20,7 +20,7 @@ function SearchBar({ onSearch }) {
                 value={query}
                 onChange={handleChange}
                 placeholder="Search..."
-                className="px-3 py-1 border border-gray-300 rounded-l-md focus:outline-none"
+                className="px-3 py-1 border border-gray-300 rounded-l-md focus:outline-none "
             />
             <button type="submit" className="px-3 py-1 border border-black bg-blue-500 text-white rounded-r-md hover:bg-blue-600 focus:outline-none">
                <img src="/images/search.png" alt="" className='h-6 invert' />

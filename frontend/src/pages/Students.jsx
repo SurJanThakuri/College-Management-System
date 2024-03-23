@@ -47,27 +47,27 @@ function Students() {
         <div className='container min-w-full min-h-screen bg-[#F0F1F3]'>
             <div className="flex">
                 <Sidebar />
-                <div className="w-5/6 p-4 bg-[#F0F1F3] absolute right-0 pt-0">
+                <div className="w-5/6 p-4 bg-[#F0F1F3] md:absolute md:right-0 absolute right-8 pt-0">
                     <Header title="Admin" />
                     <div className="container min-w-full min-h-screen bg-[#FFFFFF]">
                         <div className="p-4 bg-[#FFFFFF]">
                             <div className="flex justify-between items-center">
                                 <div className="flex justify-center gap-8 items-center">
                                     <h1 className="text-2xl font-bold mb-4">Students</h1>
-                                    <SearchBar onSearch={handleSearch} />
                                 </div>
                                 <Link to='/admin-dashboard/students/add'>
                                     <Button children="Add Student" className='px-3' />
                                 </Link>
                             </div>
+                             <SearchBar onSearch={handleSearch} />
                             <div className="overflow-x-auto">
                                 <table className="table-auto border-collapse w-full">
                                     <thead>
                                         <tr>
                                             <th className="border border-black bg-blue-500 text-white px-4 py-2">Name</th>
-                                            <th className="border border-black bg-blue-500 text-white px-4 py-2">Faculty</th>
-                                            <th className="border border-black bg-blue-500 text-white px-4 py-2">Address</th>
-                                            <th className="border border-black bg-blue-500 text-white px-4 py-2">Email</th>
+                                            <th className="border border-black bg-blue-500 text-white px-4 py-2 hidden sm:table-cell">Faculty</th>
+                                            <th className="border border-black bg-blue-500 text-white px-4 py-2 hidden md:table-cell">Address</th>
+                                            <th className="border border-black bg-blue-500 text-white px-4 py-2 hidden md:table-cell">Email</th>
                                             <th className="border border-black bg-blue-500 text-white px-4 py-2">Action</th>
                                         </tr>
                                     </thead>
@@ -75,9 +75,9 @@ function Students() {
                                         {studentsToShow.map(student => (
                                             <tr key={student.id}>
                                                 <td className="border border-black px-4 py-2">{student.name}</td>
-                                                <td className="border border-black px-4 py-2">{student.faculty}</td>
-                                                <td className="border border-black px-4 py-2">{student.address}</td>
-                                                <td className="border border-black px-4 py-2">{student.email}</td>
+                                                <td className="border border-black px-4 py-2 hidden sm:table-cell">{student.faculty}</td>
+                                                <td className="border border-black px-4 py-2 hidden md:table-cell">{student.address}</td>
+                                                <td className="border border-black px-4 py-2 hidden md:table-cell">{student.email}</td>
                                                 <td className="border border-black px-4 py-2 flex gap-4 justify-center">
                                                     <Link to={`/admin-dashboard/students/view`}>
                                                         <img className='h-6 ' src="/images/eye.png" alt="" />

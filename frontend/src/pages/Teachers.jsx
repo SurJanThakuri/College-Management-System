@@ -95,17 +95,17 @@ function Teachers() {
         <div className='container min-w-full min-h-screen bg-[#F0F1F3]'>
             <div className="flex">
                 <Sidebar />
-                <div className="w-5/6 p-4 bg-[#F0F1F3] absolute right-0 pt-0">
+                <div className="w-5/6 p-4 bg-[#F0F1F3] md:absolute md:right-0 absolute right-8 pt-0">
                     <Header title="Admin" />
                     <div className="flex justify-between">
                     <div className="flex justify-center gap-8 items-center">
                                     <h1 className="text-2xl font-bold mb-4">Teachers</h1>
-                                    <SearchBar onSearch={handleSearch} />
                                 </div>
                         <Link to="/admin-dashboard/teachers/add">
                             <Button children="Add Teacher" type='button' className='px-4' />
                         </Link>
                     </div>
+                                    <SearchBar onSearch={handleSearch} />
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {teachersToShow.map((teacher) => (

@@ -41,7 +41,7 @@ function Students() {
         <div className='container min-w-full min-h-screen bg-[#F0F1F3]'>
             <div className="flex">
                 <Sidebar />
-                <div className="w-5/6 p-4 bg-[#F0F1F3] absolute right-0 pt-0">
+                <div className="w-5/6 p-4 bg-[#F0F1F3] md:absolute md:right-0 absolute right-8 pt-0">
                     <Header title="Admin" />
                     <div className="container min-w-full min-h-screen bg-[#FFFFFF]">
                         <div className="p-4 bg-[#FFFFFF]">
@@ -55,19 +55,16 @@ function Students() {
                                 <table className="table-auto border-collapse w-full">
                                     <thead>
                                         <tr>
+                                            <th className="border border-black bg-blue-500 text-white px-4 py-2">Action</th>
                                             <th className="border border-black bg-blue-500 text-white px-4 py-2">Faculty</th>
                                             <th className="border border-black bg-blue-500 text-white px-4 py-2">Semester</th>
                                             <th className="border border-black bg-blue-500 text-white px-4 py-2">Timing</th>
-                                            <th className="border border-black bg-blue-500 text-white px-4 py-2">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                     {TimesToShow.map((classTime, index) => (
                                     <tr key={index}>
-                                        <td className="border border-black px-4 py-2">{classTime.faculty}</td>
-                                        <td className="border border-black px-4 py-2">{classTime.semester}</td>
-                                        <td className="border border-black px-4 py-2">{classTime.time}</td>
-                                        <td className="border border-black px-4 py-2 flex gap-4 justify-center">
+                                        <td className="border border-black px-4 py-6 flex gap-4 justify-center">
                                                     <Link to={`/admin-dashboard/students/1/edit`}>
                                                         <img className='h-6' src="/images/edit-text.png" alt="" />
                                                     </Link>
@@ -75,6 +72,9 @@ function Students() {
                                                         <img className='h-6' src="/images/delete.png" alt="" />
                                                     </Link>
                                                 </td>
+                                        <td className="border border-black px-4 py-2">{classTime.faculty}</td>
+                                        <td className="border border-black px-4 py-2">{classTime.semester}</td>
+                                        <td className="border border-black px-4 py-2">{classTime.time}</td>
                                     </tr>
                                 ))}
                                     </tbody>
