@@ -14,7 +14,6 @@ import Faculty from './pages/Faculty.jsx'
 import AddFaculty from './pages/AddFaculty.jsx'
 import EditFaculty from './pages/EditFaculty.jsx'
 import AddTeacher from './pages/AddTeacher.jsx'
-import store from './store/store.js'
 import { Provider } from 'react-redux'
 import Teacher from './pages/Teacher.jsx'
 import EditTeacher from './pages/EditTeacher.jsx'
@@ -36,6 +35,8 @@ import AddClass from './pages/AddClass.jsx'
 import ClassTimes from './pages/ClassTimes.jsx'
 import EditClass from './pages/EditClass.jsx'
 import EditAdmin from './pages/EditAdmin.jsx'
+import store from './store/store.js'
+import AuthLayout from './components/AuthLayout.jsx'
 
 const router = createBrowserRouter([
     {
@@ -48,123 +49,270 @@ const router = createBrowserRouter([
             },
             {
                 path: "/admin-login",
-                element: <AdminLogin />
+                element: (
+                    <AuthLayout authentication={false}>
+                        <AdminLogin />
+                    </AuthLayout>
+                ),
             },
             {
                 path: "/teacher-login",
-                element: <TeacherLogin />
+                element: (
+                    <AuthLayout authentication={false}>
+                        <TeacherLogin />
+                    </AuthLayout>
+                ),
             },
             {
                 path: "/student-login",
-                element: <StudentLogin />
+                element: (
+                    <AuthLayout authentication={false}>
+                        <StudentLogin />
+                    </AuthLayout>
+                ),
             },
             {
                 path: "/admin-dashboard",
-                element: <AdminDashboard />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <AdminDashboard />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/edit",
-                element: <EditAdmin />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <EditAdmin />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/faculties",
-                element: <Faculties />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <Faculties />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/faculties/BCA",
-                element: <Faculty />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <Faculty />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/faculties/add-faculty",
-                element: <AddFaculty />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <AddFaculty />
+                    </AuthLayout>
+                )
             },
             {
                 path: "admin-dashboard/faculties/BCA/edit",
-                element: <EditFaculty />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <EditFaculty />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/teachers",
-                element: <Teachers />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <Teachers />
+                    </AuthLayout>
+                )
             },
             {
-                path: '/admin-dashboard/teachers/teacher',
-                element: <Teacher />
+                path: '/admin-dashboard/teachers/:id',
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <Teacher />
+                    </AuthLayout>
+                )
             },
             {
-                path: '/admin-dashboard/teachers/teacher/edit',
-                element: <EditTeacher />
+                path: '/admin-dashboard/teachers/:id/edit',
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <EditTeacher />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/teachers/add",
-                element: <AddTeacher />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <AddTeacher />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/students",
-                element: <Students />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <Students />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/students/add",
-                element: <AddStudent />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <AddStudent />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/students/view",
-                element: <Student />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <Student />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/students/1/edit",
-                element: <EditStudent />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <EditStudent />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/payments",
-                element: <Payments />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <Payments />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/payments/add",
-                element: <AddPayment />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <AddPayment />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/payments/1/edit",
-                element: <EditPayment />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <EditPayment />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/notices",
-                element: <Notices />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <Notices />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/notices/add",
-                element: <AddNotice />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <AddNotice />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/notices/1/edit",
-                element: <EditNotice />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <EditNotice />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/notices/1/view",
-                element: <Complaint />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <Complaint />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/complaints",
-                element: <Complaints />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <Complaints />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/routines",
-                element: <Routines />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <Routines />
+                    </AuthLayout>
+                )
             },
             {
                 path: "/admin-dashboard/routines/BCA",
-                element: <Routine />
+                element: (
+                    <AuthLayout authentication>
+                        {" "}
+                        <Routine />
+                    </AuthLayout>
+                )
             },
            {
             path: "/admin-dashboard/routines/BCA/add-class",
-            element: <AddClass />
+            element: (
+                <AuthLayout authentication>
+                    {" "}
+                    <AddClass />
+                </AuthLayout>
+            )
            },
            {
             path: "/admin-dashboard/routines/BCA/edit-class",
-            element: <EditClass />
+            element: (
+                <AuthLayout authentication>
+                    {" "}
+                    <EditClass />
+                </AuthLayout>
+            )
            },
            {
             path: "/admin-dashboard/routines/class-times",
-            element: <ClassTimes />
+            element: (
+                <AuthLayout authentication>
+                    {" "}
+                    <ClassTimes />
+                </AuthLayout>
+            )
            }
         ],
     },

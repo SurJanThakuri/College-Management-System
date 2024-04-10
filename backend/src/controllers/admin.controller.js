@@ -1,6 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiError } from "../utils/ApiError.js"
 import { Admin } from "../models/admin.model.js"
+import { Teacher } from "../models/teacher.model.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
@@ -23,7 +24,7 @@ const generateAccessAndRefreshTokens = async (adminId) => {
 
 const registerAdmin = asyncHandler(async (req, res) => {
     // get admin details from frontend
-    const { name, email, address, password, phone, } = req.body
+    const { name, email, address, password, phone } = req.body
     // console.log("email: ", email);
 
     // validation - not empty
@@ -276,6 +277,141 @@ const updateProfilePicture = asyncHandler(async(req, res) => {
     .json(new ApiResponse(200, admin, "Profile Picture updated successfully"))
 })
 
+//teacher controller through admin access
+const getTeacherById = asyncHandler(async(req, res) => {
+    const { id } = req.params
+    const teacher = await Teacher.findById(id)
+    if (!teacher) {
+        throw new ApiError(404, "Teacher not found")
+    }
+    return res.status(200).json(
+        new ApiResponse(200, teacher, "Teacher data fetched successfully")
+    )
+})
+
+const getAllTeachers = asyncHandler(async (req, res) => {
+    try {
+        const teachers = await Teacher.find({}, "-password -refreshToken");
+        const teachersData = teachers.map((teacher) => {
+            return {
+                id: teacher._id,
+                name: teacher.name,
+                email: teacher.email,
+                address: teacher.address,
+                phone: teacher.phone,
+                bio: teacher.bio,
+                course: teacher.course,
+                shift: teacher.shift,
+                profilePicture: teacher.profilePicture
+            };
+        });
+        return res.status(200).json(
+            new ApiResponse(200, teachersData, "All teachers data fetched successfully")
+        )
+    } catch (error) {
+        throw new ApiError(500, "Something went wrong while getting all teachers data");
+    }
+});
+
+
+const registerTeacher = asyncHandler(async (req, res) => {
+    // get teacher details from frontend
+    const { name, email, address, password, phone, bio, course, shift } = req.body
+
+    // validation - not empty
+    if ([name, email, address, password, phone, bio, course, shift].some((field) => field?.trim() === "")) {
+        throw new ApiError(400, "All fields are required")
+    }
+
+    // check if account already exists - email
+    const existedTeacher = await Teacher.findOne({ email })
+    if (existedTeacher) {
+        throw new ApiError(409, "Teacher with this email already exists")
+    }
+
+    // check for profile picture
+    const profilePictureLocalPath = req.files?.profilePicture[0]?.path;
+    if (!profilePictureLocalPath) {
+        throw new ApiError(400, "Profile picture is required")
+    }
+
+    // upload profile picture to cloudinary
+    const profilePicture = await uploadOnCloudinary(profilePictureLocalPath)
+
+    if (!profilePicture) {
+        throw new ApiError(500, "Failed to upload profile picture")
+    }
+
+    // create teacher object - create entry in db
+    const teacher = await Teacher.create({
+        name,
+        email,
+        address,
+        password,
+        phone,
+        bio,
+         course,
+          shift,
+        profilePicture: profilePicture.url
+    })
+
+    // check for teacher creation - remove password and refresh token field from response
+    const createdTeacher = await Teacher.findById(teacher._id).select("-password -refreshToken")
+
+    if (!createdTeacher) {
+        throw new ApiError(500, "Failed to create teacher")
+    }
+
+    // return response
+    return res.status(201).json(
+        new ApiResponse(200, createdTeacher, "Teacher created successfully")
+    )
+})
+
+const updateTeacherDetails = asyncHandler(async (req, res) => {
+    const {id} = req.params;
+    const { name, email, phone, address, bio, course, shift } = req.body;
+
+    if (!name || !email || !phone || !address || !bio || !course || !shift) {
+        throw new ApiError(400, "All fields are required")
+    }
+
+    const teacher = await Teacher.findByIdAndUpdate(
+        id,
+        {
+            $set: {
+                name: name,
+                email: email,
+                address: address,
+                phone: phone,
+                bio: bio,
+                course: course,
+                shift: shift
+            }
+        },
+        { new: true }
+    ).select("-password")
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, teacher, "Account details updated successfully"))
+})
+
+// write a function to delete a specific teacher from db
+
+const deleteTeacher = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const teacher = await Teacher.findByIdAndDelete(id);
+    if (!teacher) {
+        throw new ApiError(404, "Teacher not found");
+    }
+    return res
+        .status(200)
+        .json(new ApiResponse(200, teacher, "Teacher deleted successfully"));
+
+});
+
 export {
     registerAdmin,
     loginAdmin,
@@ -284,5 +420,11 @@ export {
     changeCurrentPassword,
     getCurrentAdmin,
     updateAccountDetails,
-    updateProfilePicture
+    updateProfilePicture,
+
+    getTeacherById,
+    getAllTeachers,
+    registerTeacher,
+    updateTeacherDetails,
+    deleteTeacher,
 }

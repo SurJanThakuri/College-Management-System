@@ -1,34 +1,64 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Button from '../components/Button';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import InputField from '../components/InputField';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function EditTeacher() {
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
+    const { id } = useParams();
+    const [teacher, setTeacher] = useState(null);
+
+    const navigate = useNavigate();
+    
     useEffect(() => {
-        // Mock data for an existing teacher
-        const teacher = {
-            name: 'John Doe',
-            email: 'johndoe@example.com',
-            address: '123 Main St',
-            password: '********',
-            shift: 'Morning',
-            courses: 'Math, Science',
-            bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            profilePic: null // Profile picture file or URL
-        };
-
-        // Set default values for each field
-        Object.keys(teacher).forEach(key => setValue(key, teacher[key]));
-    }, [setValue]);
-
+        const accessToken = localStorage.getItem('accessToken');
+        axios.get(`http://localhost:8000/api/v1/admins/teachers/${id}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+        .then(response => {
+            setTeacher(response.data.data);
+            // Set default values for form fields
+            setValue('name', response.data.data.name);
+            setValue('email', response.data.data.email);
+            setValue('address', response.data.data.address);
+            setValue('shift', response.data.data.shift);
+            setValue('course', response.data.data.course);
+            setValue('bio', response.data.data.bio);
+            setValue('phone', response.data.data.phone);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }, [id]);
+    
+    if (!teacher) {
+        return <div>Loading...</div>;
+    }
+    
     const onSubmit = (data) => {
-        // Handle form submission (e.g., send data to server)
-        console.log('Form submitted:', data);
-        // Optionally, redirect user to another page after submission
+        const accessToken = localStorage.getItem('accessToken');
+        axios.patch(`http://localhost:8000/api/v1/admins/update-teacher/${id}`, data, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+            .then(response => {
+                console.log('Teacher updated successfully:', response.data);
+                // Optionally, redirect user to another page after submission by using useNavigate()
+                navigate(`/admin-dashboard/teachers/${id}`);
+               
+            })
+            .catch(error => {
+                console.error('Error updating teacher:', error);
+            });
     };
 
     return (
@@ -69,14 +99,7 @@ function EditTeacher() {
                                     className="mb-2"
                                 />
                                 {errors.address && <span className='text-red-600'>This field is required</span>}
-                                <InputField
-                                    type="password"
-                                    label="Password:"
-                                    placeholder="Password"
-                                    {...register("password", { required: true })}
-                                    className="mb-2"
-                                />
-                                {errors.password && <span className='text-red-600'>This field is required</span>}
+                                
                                 <InputField
                                     type="text"
                                     label="Shift:"
@@ -89,10 +112,10 @@ function EditTeacher() {
                                     type="text"
                                     label="Courses:"
                                     placeholder="Teacher Courses"
-                                    {...register("courses", { required: true })}
+                                    {...register("course", { required: true })}
                                     className="mb-2"
                                 />
-                                {errors.courses && <span className='text-red-600'>This field is required</span>}
+                                {errors.course && <span className='text-red-600'>This field is required</span>}
                                 <InputField
                                     type="textarea"
                                     label="Bio:"
@@ -102,12 +125,13 @@ function EditTeacher() {
                                 />
                                 {errors.bio && <span className='text-red-600'>This field is required</span>}
                                 <InputField
-                                    type="file"
-                                    label="Profile Picture:"
-                                    {...register("profilePic", { required: true })}
+                                    type="text"
+                                    label="Phone:"
+                                    placeholder="Teacher Phone"
+                                    {...register("phone", { required: true })}
                                     className="mb-2"
                                 />
-                                {errors.profilePic && <span className='text-red-600'>This field is required</span>}
+                                {errors.phone && <span className='text-red-600'>This field is required</span>}
                                 <div>
                                 <Button children="Update Teacher" type='submit' className='my-3 px-3' />
                                 </div>

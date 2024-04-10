@@ -32,7 +32,7 @@ const ProfilePopup = ({ data, onClose }) => {
                     </button>
                 </div>
                 <div className="sm:flex sm:flex-col sm:items-center sm:space-x-6">
-                    <img src={data.image} alt="Profile" className="rounded-full w-24 h-24 mx-auto mb-4 mt-4 sm:w-32 sm:h-32 sm:mx-0 sm:mb-0 sm:mt-6" />
+                    <img src={data.profilePicture} alt="Profile" className="rounded-full w-24 h-24 mx-auto mb-4 mt-4 sm:w-32 sm:h-32 sm:mx-0 sm:mb-0 sm:mt-6" />
                     <p className="font-bold text-xl sm:text-2xl text-center">{data.name}</p>
                     
                 </div>

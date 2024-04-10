@@ -1,71 +1,107 @@
-import React from 'react'
-import Header from '../components/Header'
-import Sidebar from '../components/Sidebar'
-import { Link } from 'react-router-dom'
-import Button from '../components/Button'
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import Header from '../components/Header';
+import Sidebar from '../components/Sidebar';
+import Button from '../components/Button';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Teacher() {
+    const { id } = useParams();
+    const [teacher, setTeacher] = useState(null);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        axios.get(`http://localhost:8000/api/v1/admins/teachers/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                setTeacher(response.data.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, [id]);
+
+    if (!teacher) {
+        return <div>Loading...</div>;
+    }
+
+    //write function to delete teacher
+
+    const handleDelete = () => {
+        const token = localStorage.getItem('accessToken');
+        axios.delete(`http://localhost:8000/api/v1/admins/delete-teacher/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                // Optionally, redirect user to another page after deletion by using useNavigate()
+                navigate('/admin-dashboard/teachers');
+            })
+            .catch(error => {
+                console.error('Error deleting teacher:', error);
+            });
+    };
+
     return (
         <div className='container min-w-full min-h-screen bg-[#F0F1F3]'>
             <div className="flex">
                 <Sidebar />
                 <div className=" w-5/6 p-4 bg-[#F0F1F3] md:absolute md:right-0 absolute right-8 pt-0">
-            <Header title="Admin" />
-            <div className='flex flex-col-reverse md:flex-row w-full'>
-                
-                <div className="w-full md:w-1/2 p-5 md:p-0">
-                    <div className="w-full h-full flex flex-col items-center md:items-start">
-                        {/* <div className="block md:hidden rounded-full shadow-xl mx-auto -mt-16 h-24 w-24 bg-center" ></div> */}
-                        <h1 className="text-2xl font-bold pt-0 md:pt-0">Marry Copper</h1>
-                        <div className="mx-auto md:mx-0 w-3/4 pt-3 border-b-2 border-blue-600 opacity-25"></div>
-                        <p className="pt-4 text-base md:text-lg">Lorem ipsum dolor sit amet.</p>
-                        <p className="pt-4 text-base md:text-lg flex gap-1 items-center justify-center md:justify-start">
-                            <strong>Address:</strong> Lorem, ipsum dolor.
-                        </p>
-                        <p className="pt-4 text-base md:text-lg flex gap-1 items-center justify-center md:justify-start">
-                            <strong>Email:</strong> marry.copper@example.com
-                        </p>
-                        <p className="pt-4 text-base md:text-lg flex gap-1 items-center justify-center md:justify-start">
-                            <strong>Shift:</strong> Morning 
-                        </p>
-                        <p className="pt-4 text-base md:text-lg flex gap-1 items-center justify-center md:justify-start">
-                            <strong>Phone:</strong> 980-436-0990
-                        </p>
-    
-                        <p className="pt-4 text-base md:text-lg flex gap-1 items-center justify-center md:justify-start">
-                            <strong>Password:</strong> marry@123
-                        </p>
-                        <p>
-                        <div className="mt-4">
-                            <h2 className="text-base font-bold md:text-lg">Courses:</h2>
-                            <ul className='ml-10 md:ml-0'>
-                                <li> <strong>DBMS</strong> - BCA</li>
-                                <li> <strong>DBMS</strong> - BCA</li>
-                                <li> <strong>DBMS</strong> - BCA</li>
-                            </ul>
+                    <Header title="Admin" />
+                    <div className='flex flex-col-reverse md:flex-row w-full'>
+                        <div className="w-full md:w-1/2 p-5 md:p-0">
+                            <div className="w-full h-full flex flex-col items-center md:items-start">
+                                <h1 className="text-2xl font-bold pt-0 md:pt-0">{teacher.name}</h1>
+                                <div className="mx-auto md:mx-0 w-3/4 pt-3 border-b-2 border-blue-600 opacity-25"></div>
+                                <p className="pt-4 text-base md:text-lg">{teacher.bio}</p>
+                                <p className="pt-4 text-base md:text-lg flex gap-1 items-center justify-center md:justify-start">
+                                    <strong>Address:</strong> {teacher.address}
+                                </p>
+                                <p className="pt-4 text-base md:text-lg flex gap-1 items-center justify-center md:justify-start">
+                                    <strong>Email:</strong> {teacher.email}
+                                </p>
+                                <p className="pt-4 text-base md:text-lg flex gap-1 items-center justify-center md:justify-start">
+                                    <strong>Shift:</strong> {teacher.shift}
+                                </p>
+                                <p className="pt-4 text-base md:text-lg flex gap-1 items-center justify-center md:justify-start">
+                                    <strong>Phone:</strong> {teacher.phone}
+                                </p>
+                                <p className="pt-4 text-base md:text-lg flex gap-1 items-center justify-center md:justify-start">
+                                    <strong>Courses:</strong> {teacher.course}
+                                </p>
+                                {/* <div className="mt-4">
+                                    <h2 className="text-base font-bold md:text-lg">Courses:</h2>
+                                    <ul className='ml-10 md:ml-0'>
+                                        {teacher.courses?.map(course => (
+                                            <li key={course}>{course}</li>
+                                        ))}
+                                    </ul>
+                                </div> */}
+                                <div className="mt-4 button flex justify-center gap-4 md:justify-start">
+                                    <Link to={`/admin-dashboard/teachers/${id}/edit`}>
+                                        <Button children="Edit" type='button' className='px-6' />
+                                    </Link>
+                                    
+                                        <Button children="Delete" type='button' onClick={handleDelete} bgColor='bg-red-600' hover='hover:bg-red-700' className='px-4' />
+                                    
+                                </div>
+                            </div>
                         </div>
-                        </p>
-                        <div className="mt-4 button flex justify-center gap-4 md:justify-start">
-                        <Link to="/admin-dashboard/teachers/teacher/edit">
-                                <Button children="Edit" type='button' className='px-6' />
-                            </Link>
-                        <Link to="/admin-dashboard/faculties/BCA/edit">
-                                <Button children="Delete" type='button' bgColor='bg-red-600' hover='hover:bg-red-700' className='px-4' />
-                            </Link>
+                        <div className="w-full md:w-2/5 p-5 md:p-0">
+                            <img className='w-full md:h-[80vh] object-cover md:object-contain' src={teacher.profilePicture} alt={teacher.name} />
                         </div>
-                      
-                        
                     </div>
                 </div>
-                <div className="w-full md:w-2/5 p-5 md:p-0">
-                    <img className='w-full md:h-[80vh] object-cover md:object-contain' src="https://i.pinimg.com/474x/3b/3f/a1/3b3fa1a2db40f8f2610b9cd691cfe8e2.jpg" alt="" />
-                </div>
             </div>
-
         </div>
-    </div>
-    </div>
-    )
+    );
 }
 
-export default Teacher
+export default Teacher;

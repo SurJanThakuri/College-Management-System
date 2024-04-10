@@ -4,14 +4,33 @@ import Button from '../components/Button';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import InputField from '../components/InputField';
+import axios from 'axios';
 
 function AddTeacher() {
     const { register, handleSubmit, formState: { errors } } = useForm();
 
-    const onSubmit = (data) => {
-        // Handle form submission (e.g., send data to server)
-        console.log('Form submitted:', data);
-        // Optionally, redirect user to another page after submission
+    const onSubmit = async (data) => {
+        const profilePicture = data.profilePicture[0];
+    
+        try {
+            const formData = new FormData();
+            formData.append('name', data.name);
+            formData.append('email', data.email);
+            formData.append('address', data.address);
+            formData.append('phone', data.phone);
+            formData.append('password', data.password);
+            formData.append('shift', data.shift);
+            formData.append('course', data.course);
+            formData.append('bio', data.bio);
+            formData.append('profilePicture', profilePicture);
+
+            const response = await axios.post('http://localhost:8000/api/v1/admins/teacher/register', formData);
+            console.log('Teacher added:', response.data);
+            // Optionally, redirect user to another page after submission
+            window.location.href = '/admin-dashboard';
+        } catch (error) {
+            console.error('Error adding teacher:', error);
+        }
     };
 
     return (
@@ -53,6 +72,14 @@ function AddTeacher() {
                                 />
                                 {errors.address && <span className='text-red-600'>This field is required</span>}
                                 <InputField
+                                    type="text"
+                                    label="Phone:"
+                                    placeholder="Teacher Phone"
+                                    {...register("phone", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.phone && <span className='text-red-600'>This field is required</span>}
+                                <InputField
                                     type="password"
                                     label="Password:"
                                     placeholder="Password"
@@ -72,10 +99,10 @@ function AddTeacher() {
                                     type="text"
                                     label="Courses:"
                                     placeholder="Teacher Courses"
-                                    {...register("courses", { required: true })}
+                                    {...register("course", { required: true })}
                                     className="mb-2"
                                 />
-                                {errors.courses && <span className='text-red-600'>This field is required</span>}
+                                {errors.course && <span className='text-red-600'>This field is required</span>}
                                 <InputField
                                     type="textarea"
                                     label="Bio:"
@@ -87,10 +114,10 @@ function AddTeacher() {
                                 <InputField
                                     type="file"
                                     label="Profile Picture:"
-                                    {...register("profilePic", { required: true })}
+                                    {...register("profilePicture", { required: true })}
                                     className="mb-2"
                                 />
-                                {errors.profilePic && <span className='text-red-600'>This field is required</span>}
+                                {errors.profilePicture && <span className='text-red-600'>This field is required</span>}
                                 <div>
                                 <Button children="Add Teacher" type='submit' className='my-3 px-3' />
                                 </div>

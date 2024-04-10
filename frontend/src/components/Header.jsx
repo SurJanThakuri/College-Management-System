@@ -1,24 +1,40 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ProfilePopup from './ProfilePopup';
 import LogoutPopup from './LogoutPopup';
-
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { logout } from '../store/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 function Header({title}) {
     const [showPopup, setShowPopup] = useState(false);
     const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+    const [adminData, setAdminData] = useState(null);
+
+   useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+
+    if (token) {
+        axios.get('http://localhost:8000/api/v1/admins/current-user', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            setAdminData(response.data.data);
+        })
+        .catch(error => {
+            console.error('Error fetching admin data:', error);
+        });
+    }
+}, []);
+   
 
     const togglePopup = () => {
         setShowPopup(!showPopup);
     };
 
     const [showProfilePopup, setShowProfilePopup] = useState(false);
-    const data = {
-        name: 'Admin Name',
-        email: 'admin@example.com',
-        address: '123 Main St, City',
-        phone: '123-456-7890',
-        image: '/images/man.png'
-    };
 
     const toggleProfilePopup = () => {
         setShowProfilePopup(!showProfilePopup);
@@ -28,15 +44,30 @@ function Header({title}) {
         setShowLogoutPopup(!showLogoutPopup);
     };
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate()
     const handleLogoutConfirm = () => {
-        // Add your logout logic here
+        const token = localStorage.getItem('accessToken');
 
-        // For now, just close the popup
-        
-
+        axios.post('http://localhost:8000/api/v1/admins/logout', null, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            dispatch(logout());
+            // remove the session created
+            localStorage.removeItem('accessToken');
+            navigate("/admin-login")
+        })
+        .catch(error => {
+            console.error('Logout failed:', error);
+            // Optionally, you can handle the error (e.g., display an error message)
+        });
 
         setShowLogoutPopup(false);
     };
+    
 
     const handleLogoutCancel = () => {
         setShowLogoutPopup(false);
@@ -52,7 +83,7 @@ function Header({title}) {
                 </div>
                 <div className="profile mr-8 ">
                     <div className="rounded-full w-12 h-12 bg-gray-300 flex items-center justify-center cursor-pointer" onClick={togglePopup}>
-                        <img src="/images/man.png" alt="Profile" className="rounded-full w-10 h-10" />
+                        <img src={adminData?.profilePicture} alt="Profile" className="rounded-full w-10 h-10" />
                     </div>
                     <div className={`absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-md ${showPopup ? '' : 'hidden'}`}>
                         <ul className="py-2">
@@ -73,7 +104,7 @@ function Header({title}) {
                 </div>
 
             </div>
-            {showProfilePopup && <ProfilePopup data={data} onClose={toggleProfilePopup} />}
+            {showProfilePopup && <ProfilePopup data={adminData} onClose={toggleProfilePopup} />}
         </div>
     )
 }
