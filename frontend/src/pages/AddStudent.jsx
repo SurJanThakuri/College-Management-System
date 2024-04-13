@@ -1,17 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Button from '../components/Button';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import InputField from '../components/InputField';
+import axios from 'axios';
+import { refreshToken } from '../services/authServices';
+import { useNavigate } from 'react-router-dom';
 
 function AddStudent() {
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const [faculties, setFaculties] = useState([]); 
+    const navigate = useNavigate();
+    
+    
+    useEffect(() => {
+
+        const accessToken = localStorage.getItem('accessToken');
+        const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
+
+        if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
+             refreshToken();
+        }
+        }, []);
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('accessToken');
+        axios.get('http://localhost:8000/api/v1/admin/faculties', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(response => {
+                setFaculties(response.data.data);
+            })
+            .catch(error => {
+                console.error('Error fetching faculties:', error);
+            });
+    }, []);
 
     const onSubmit = (data) => {
-        // Handle form submission (e.g., send data to server)
-        console.log('Form submitted:', data);
-        // Optionally, redirect user to another page after submission
+        const accessToken = localStorage.getItem('accessToken');
+        axios.post('http://localhost:8000/api/v1/admins/student/register', data, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+            .then(response => {
+                navigate('/admin-dashboard/students');
+            })
+            .catch(error => {
+                console.error('Error adding student:', error);
+            });
     };
 
     return (
@@ -45,6 +86,14 @@ function AddStudent() {
                                 />
                                 {errors.email && <span className='text-red-600'>{errors.email.message}</span>}
                                 <InputField
+                                    type="password"
+                                    label="Password:"
+                                    placeholder="Create Password"
+                                    {...register("password", { required: "Password is required" })}
+                                    className="mb-2"
+                                />
+                                {errors.password && <span className='text-red-600'>{errors.password.message}</span>}
+                                <InputField
                                     type="text"
                                     label="Phone Number:"
                                     placeholder="Phone Number"
@@ -52,6 +101,14 @@ function AddStudent() {
                                     className="mb-2"
                                 />
                                 {errors.phone && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="text"
+                                    label="Address:"
+                                    placeholder="Address"
+                                    {...register("address", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.address && <span className='text-red-600'>This field is required</span>}
                                 <InputField
                                     type="text"
                                     label="Shift:"
@@ -76,6 +133,14 @@ function AddStudent() {
                                     className="mb-2"
                                 />
                                 {errors.gender && <span className='text-red-600'>This field is required</span>}
+                                <label htmlFor="faculty" className="block mb-2">Select Faculty:</label>
+                                <select name="faculty" id="faculty" {...register("faculty", { required: true })} className="w-full h-10 rounded-md border-2 mb-2">
+                                    <option value="">Select a faculty</option>
+                                    {faculties.map(faculty => (
+                                        <option key={faculty._id} value={faculty._id}>{faculty.name}</option>
+                                    ))}
+                                </select>
+                                {errors.faculty && <span className='text-red-600'>This field is required</span>}
                                 <InputField
                                     type="text"
                                     label="Nationality:"
@@ -110,17 +175,9 @@ function AddStudent() {
                                 {errors.admissionYear && <span className='text-red-600'>This field is required</span>}
                                 <InputField
                                     type="text"
-                                    label="Faculty:"
-                                    placeholder="Faculty"
-                                    {...register("faculty", { required: true })}
-                                    className="mb-2"
-                                />
-                                {errors.faculty && <span className='text-red-600'>This field is required</span>}
-                                <InputField
-                                    type="text"
                                     label="Roll Number:"
                                     placeholder="Roll Number"
-                                    {...register("rollNumber", { required: true })}
+                                    {...register("rollNo", { required: true })}
                                     className="mb-2"
                                 />
                                 {errors.rollNumber && <span className='text-red-600'>This field is required</span>}
@@ -136,7 +193,7 @@ function AddStudent() {
                                     type="text"
                                     label="Guardian's Relationship:"
                                     placeholder="Guardian's Relationship"
-                                    {...register("guardianRelationship", { required: true })}
+                                    {...register("guardianRelation", { required: true })}
                                     className="mb-2"
                                 />
                                 {errors.guardianRelationship && <span className='text-red-600'>This field is required</span>}
@@ -144,7 +201,7 @@ function AddStudent() {
                                     type="text"
                                     label="Guardian's Contact:"
                                     placeholder="Guardian's Contact"
-                                    {...register("guardianContact", { required: true })}
+                                    {...register("guardianPhone", { required: true })}
                                     className="mb-2"
                                 />
                                 {errors.guardianContact && <span className='text-red-600'>This field is required</span>}

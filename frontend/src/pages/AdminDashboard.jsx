@@ -8,8 +8,20 @@ import Button from '../components/Button';
 import { useForm } from 'react-hook-form';
 import InputField from '../components/InputField';
 import axios from 'axios';
+import { refreshToken } from '../services/authServices';
 
 const AdminDashboard = () => {
+    useEffect(() => {
+
+            const accessToken = localStorage.getItem('accessToken');
+            const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
+    
+            if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
+                 refreshToken();
+            }
+            }, []);
+    
+
     const [showForm, setShowForm] = useState(false);
     const { handleSubmit, register } = useForm();
 
@@ -18,7 +30,6 @@ const AdminDashboard = () => {
         console.log(data);
     };
 
-    //use axios to fetch the teachers count inside the useEffect
     const [teachers, setTeachers] = useState(null);
     useEffect(() => {
         const token = localStorage.getItem('accessToken');

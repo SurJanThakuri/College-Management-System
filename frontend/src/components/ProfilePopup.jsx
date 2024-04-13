@@ -1,11 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from './Button';
 import { Link } from 'react-router-dom';
 import ProfilePicturePopup from './ProfilePicturePopup';
 import { useForm } from 'react-hook-form';
+import { refreshToken } from '../services/authServices';
 
 const ProfilePopup = ({ data, onClose }) => {
     const { register, handleSubmit, formState: { errors } } = useForm();
+
+    useEffect(() => {
+
+        const accessToken = localStorage.getItem('accessToken');
+        const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
+
+        if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
+             refreshToken();
+        }
+        }, []);
+
     const onSubmit = (data) => {
         // Handle form submission (e.g., send data to server)
         console.log('Form submitted:', data);

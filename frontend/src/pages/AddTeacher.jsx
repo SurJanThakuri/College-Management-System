@@ -1,13 +1,26 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useForm } from 'react-hook-form';
 import Button from '../components/Button';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import InputField from '../components/InputField';
 import axios from 'axios';
+import {useNavigate} from 'react-router-dom';
+import { refreshToken } from '../services/authServices';
 
 function AddTeacher() {
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const navigate = useNavigate()
+
+    useEffect(() => {
+
+        const accessToken = localStorage.getItem('accessToken');
+        const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
+
+        if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
+             refreshToken();
+        }
+        }, []);
 
     const onSubmit = async (data) => {
         const profilePicture = data.profilePicture[0];
@@ -24,10 +37,16 @@ function AddTeacher() {
             formData.append('bio', data.bio);
             formData.append('profilePicture', profilePicture);
 
-            const response = await axios.post('http://localhost:8000/api/v1/admins/teacher/register', formData);
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await axios.post('http://localhost:8000/api/v1/admins/teacher/register', formData, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
             console.log('Teacher added:', response.data);
-            // Optionally, redirect user to another page after submission
-            window.location.href = '/admin-dashboard';
+            
+            navigate('/admin-dashboard/teachers');
         } catch (error) {
             console.error('Error adding teacher:', error);
         }

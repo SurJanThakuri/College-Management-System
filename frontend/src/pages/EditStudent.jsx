@@ -1,45 +1,99 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Button from '../components/Button';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
+import InputField from '../components/InputField';
+import { useForm } from 'react-hook-form';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function EditStudent() {
-    const { id } = useParams(); // Assuming id is the parameter for student ID
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
-    // Fetch student data based on id (you can replace this with actual API call)
-    const [student, setStudent] = useState({
-        id: id,
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        phone: '123-456-7890',
-        shift: 'Morning',
-        dob: '1990-01-01',
-        gender: 'Male',
-        nationality: 'American',
-        emergencyContact: 'Jane Doe - 987-654-3210',
-        bloodGroup: 'O+',
-        admissionYear: '2022',
-        faculty: 'Science',
-        rollNumber: 'SCI-001',
-        guardianName: 'Jane Doe',
-        guardianRelationship: 'Mother',
-        guardianContact: '987-654-3210'
-    });
+    const { id } = useParams();
+    const [student, setStudent] = useState(null);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Handle form submission (e.g., send data to server)
-        console.log('Form submitted:', student);
-        // Optionally, redirect user to another page after submission
-    };
+    const [faculties, setFaculties] = useState([]);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setStudent(prevStudent => ({
-            ...prevStudent,
-            [name]: value
-        }));
+    const navigate = useNavigate();
+
+    useEffect(() => {
+
+        const accessToken = localStorage.getItem('accessToken');
+        const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
+
+        if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
+            refreshToken();
+        }
+    }, []);
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('accessToken');
+        axios.get('http://localhost:8000/api/v1/admin/faculties', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(response => {
+                setFaculties(response.data.data);
+            })
+            .catch(error => {
+                console.error('Error fetching faculties:', error);
+            });
+    }, []);
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('accessToken');
+        axios.get(`http://localhost:8000/api/v1/admins/students/${id}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+            .then(response => {
+                setStudent(response.data.data);
+                setValue('name', response.data.data.name);
+                setValue('email', response.data.data.email);
+                setValue('address', response.data.data.address);
+                setValue('dob', response.data.data.dob);
+                setValue('gender', response.data.data.gender);
+                setValue('faculty', response.data.data.faculty);
+                setValue('nationality', response.data.data.nationality);
+                setValue('rollNo', response.data.data.rollNo);
+                setValue('emergencyContact', response.data.data.emergencyContact);
+                setValue('guardianName', response.data.data.guardianName);
+                setValue('guardianRelation', response.data.data.guardianRelation);
+                setValue('guardianPhone', response.data.data.guardianPhone);
+                setValue('bloodGroup', response.data.data.bloodGroup);
+                setValue('admissionYear', response.data.data.admissionYear);
+                setValue('shift', response.data.data.shift);
+                setValue('phone', response.data.data.phone);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, [id]);
+
+    if (!student) {
+        return <div>Loading...</div>;
+    }
+
+    const onSubmit = (data) => {
+        const accessToken = localStorage.getItem('accessToken');
+        axios.patch(`http://localhost:8000/api/v1/admins/update-student/${id}`, data, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+            .then(response => {
+                console.log('Teacher updated successfully:', response.data);
+                navigate(`/admin-dashboard/students/${id}`);
+
+            })
+            .catch(error => {
+                console.error('Error updating student:', error);
+            });
     };
 
     return (
@@ -47,230 +101,159 @@ function EditStudent() {
             <div className="flex">
                 <Sidebar />
                 <div className="w-5/6 p-4 bg-[#F0F1F3] md:absolute md:right-0 absolute right-8 pt-0">
-            <Header title="Admin" />
+                    <Header title="Admin" />
                     <div className="container min-w-full min-h-screen bg-[#F0F1F3]">
                         <div className="p-4 bg-[#F0F1F3] flex flex-col justify-center items-center">
                             <h1 className="text-2xl font-bold mb-4">Edit Student</h1>
-                            <form onSubmit={handleSubmit} className='w-full md:w-1/2'>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-                                        Name:
-                                    </label>
-                                    <input
-                                        name="name"
-                                        value={student.name}
-                                        onChange={handleChange}
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-outline"
-                                        id="name"
-                                        type="text"
-                                        placeholder="Student Name"
-                                        required
-                                    />
+                            <form onSubmit={handleSubmit(onSubmit)} className='w-full md:w-1/2'>
+                                <InputField
+                                    type="text"
+                                    label="Name:"
+                                    placeholder="Student Name"
+                                    {...register("name", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.name && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="email"
+                                    label="Email:"
+                                    placeholder="Student Email"
+                                    {...register("email", {
+                                        required: "Email is required",
+                                        pattern: {
+                                            value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+                                            message: "Email address must be a valid address",
+                                        },
+                                    })}
+                                    className="mb-2"
+                                />
+                                {errors.email && <span className='text-red-600'>{errors.email.message}</span>}
+                                <InputField
+                                    type="text"
+                                    label="Phone Number:"
+                                    placeholder="Phone Number"
+                                    {...register("phone", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.phone && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="text"
+                                    label="Address:"
+                                    placeholder="Address"
+                                    {...register("address", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.address && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="text"
+                                    label="Shift:"
+                                    placeholder="Shift"
+                                    {...register("shift", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.shift && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="date"
+                                    label="Date of Birth:"
+                                    placeholder="Date of Birth"
+                                    {...register("dob", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.dob && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="text"
+                                    label="Gender:"
+                                    placeholder="Gender"
+                                    {...register("gender", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.gender && <span className='text-red-600'>This field is required</span>}
+                                <label htmlFor="faculty" className="block mb-2">Select Faculty:</label>
+                                <select
+                                    name="faculty"
+                                    id="faculty"
+                                    {...register("faculty", { required: true })}
+                                    className="w-full h-10 rounded-md border-2 mb-2"
+                                >
+                                    <option value="">Select a faculty</option>
+                                    {faculties.map((faculty) => (
+                                        <option
+                                            key={faculty._id}
+                                            value={faculty._id}
+                                        >
+                                            {faculty.name}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                {errors.faculty && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="text"
+                                    label="Nationality:"
+                                    placeholder="Nationality"
+                                    {...register("nationality", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.nationality && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="text"
+                                    label="Emergency Contact:"
+                                    placeholder="Emergency Contact"
+                                    {...register("emergencyContact", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.emergencyContact && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="text"
+                                    label="Blood Group:"
+                                    placeholder="Blood Group"
+                                    {...register("bloodGroup", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.bloodGroup && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="text"
+                                    label="Admission Year:"
+                                    placeholder="Admission Year"
+                                    {...register("admissionYear", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.admissionYear && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="text"
+                                    label="Roll Number:"
+                                    placeholder="Roll Number"
+                                    {...register("rollNo", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.rollNumber && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="text"
+                                    label="Guardian's Name:"
+                                    placeholder="Guardian's Name"
+                                    {...register("guardianName", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.guardianName && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="text"
+                                    label="Guardian's Relationship:"
+                                    placeholder="Guardian's Relationship"
+                                    {...register("guardianRelation", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.guardianRelationship && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="text"
+                                    label="Guardian's Contact:"
+                                    placeholder="Guardian's Contact"
+                                    {...register("guardianPhone", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.guardianContact && <span className='text-red-600'>This field is required</span>}
+                                <div>
+                                    <Button children="Add Student" type='submit' className='my-3 px-3' />
                                 </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                                        Email:
-                                    </label>
-                                    <input
-                                        name="email"
-                                        value={student.email}
-                                        onChange={handleChange}
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-outline"
-                                        id="email"
-                                        type="email"
-                                        placeholder="Student Email"
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="phone">
-                                        Phone Number:
-                                    </label>
-                                    <input
-                                        name="phone"
-                                        value={student.phone}
-                                        onChange={handleChange}
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-outline"
-                                        id="phone"
-                                        type="tel"
-                                        placeholder="Phone Number"
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="shift">
-                                        Shift:
-                                    </label>
-                                    <select
-                                        name="shift"
-                                        value={student.shift}
-                                        onChange={handleChange}
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-outline"
-                                        id="shift"
-                                        required
-                                    >
-                                        <option value="">Select Shift</option>
-                                        <option value="Morning">Morning</option>
-                                        <option value="Day">Day</option>
-                                    </select>
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dob">
-                                        Date of Birth:
-                                    </label>
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-outline"
-                                        id="dob"
-                                        type="date"
-                                        value={student.dob}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="gender">
-                                        Gender:
-                                    </label>
-                                    <select
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-outline"
-                                        id="gender"
-                                        value={student.gender}
-                                        onChange={handleChange}
-                                        required
-                                    >
-                                        <option value="">Select Gender</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nationality">
-                                        Nationality:
-                                    </label>
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-outline"
-                                        id="nationality"
-                                        type="text"
-                                        placeholder="Nationality"
-                                        value={student.nationality}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="emergencyContact">
-                                        Emergency Contact:
-                                    </label>
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-outline"
-                                        id="emergencyContact"
-                                        type="text"
-                                        placeholder="Emergency Contact"
-                                        value={student.emergencyContact}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bloodGroup">
-                                        Blood Group:
-                                    </label>
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-outline"
-                                        id="bloodGroup"
-                                        type="text"
-                                        placeholder="Blood Group"
-                                        value={student.bloodGroup}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="admissionYear">
-                                        Admission Year:
-                                    </label>
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-outline"
-                                        id="admissionYear"
-                                        type="text"
-                                        placeholder="Admission Year"
-                                        value={student.admissionYear}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="faculty">
-                                        Faculty:
-                                    </label>
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-outline"
-                                        id="faculty"
-                                        type="text"
-                                        placeholder="Faculty"
-                                        value={student.faculty}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="rollNumber">
-                                        Roll Number:
-                                    </label>
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-outline"
-                                        id="rollNumber"
-                                        type="text"
-                                        placeholder="Roll Number"
-                                        value={student.rollNumber}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="guardianName">
-                                        Guardian's Name:
-                                    </label>
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-outline"
-                                        id="guardianName"
-                                        type="text"
-                                        placeholder="Guardian's Name"
-                                        value={student.guardianName}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="guardianRelationship">
-                                        Guardian's Relationship:
-                                    </label>
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-outline"
-                                        id="guardianRelationship"
-                                        type="text"
-                                        placeholder="Guardian's Relationship"
-                                        value={student.guardianRelationship}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="guardianContact">
-                                        Guardian's Contact:
-                                    </label>
-                                    <input
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:shadow-outline"
-                                        id="guardianContact"
-                                        type="text"
-                                        placeholder="Guardian's Contact"
-                                        value={student.guardianContact}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <Button children="Update Student" type='submit' className='my-3 px-3' />
                             </form>
                         </div>
                     </div>

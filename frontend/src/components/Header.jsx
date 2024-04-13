@@ -5,11 +5,22 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { logout } from '../store/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { refreshToken } from '../services/authServices';
 
 function Header({title}) {
     const [showPopup, setShowPopup] = useState(false);
     const [showLogoutPopup, setShowLogoutPopup] = useState(false);
     const [adminData, setAdminData] = useState(null);
+
+    useEffect(() => {
+
+        const accessToken = localStorage.getItem('accessToken');
+        const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
+
+        if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
+             refreshToken();
+        }
+        }, []);
 
    useEffect(() => {
     const token = localStorage.getItem('accessToken');
@@ -47,17 +58,21 @@ function Header({title}) {
     const dispatch = useDispatch();
     const navigate = useNavigate()
     const handleLogoutConfirm = () => {
-        const token = localStorage.getItem('accessToken');
+        const accessToken = localStorage.getItem('accessToken');
 
         axios.post('http://localhost:8000/api/v1/admins/logout', null, {
             headers: {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${accessToken}`
             }
         })
         .then(response => {
             dispatch(logout());
             // remove the session created
             localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            //remove the expiry date of both tokens
+            localStorage.removeItem('accessTokenExpiry');
+            localStorage.removeItem('refreshTokenExpiry');
             navigate("/admin-login")
         })
         .catch(error => {

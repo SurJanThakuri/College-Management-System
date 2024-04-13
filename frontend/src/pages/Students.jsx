@@ -5,19 +5,56 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import ReactPaginate from 'react-paginate';
 import SearchBar from '../components/SearchBar';
+import axios from 'axios';
+import { refreshToken } from '../services/authServices';
 
 
 function Students() {
-    const students = [];
-    for (let i = 1; i <= 100; i++) {
-        students.push({
-            id: i,
-            name: `Student ${i}`,
-            faculty: i % 3 === 0 ? 'BCA' : i % 2 === 0 ? 'BBA' : 'BSC',
-            address: `${i} Main St, City`,
-            email: `student${i}@example.com`
-        });
-    }
+    const [students, setStudents] = useState([]);
+
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        axios.get('http://localhost:8000/api/v1/admins/students',
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                setStudents(response.data.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
+    
+    useEffect(() => {
+
+        const accessToken = localStorage.getItem('accessToken');
+        const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
+
+        if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
+             refreshToken();
+        }
+        }, []);
+
+    const handleDelete = (id) => {
+        const accessToken = localStorage.getItem('accessToken');
+        axios.delete(`http://localhost:8000/api/v1/admins/delete-student/${id}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+            .then(response => {
+                // Optionally, redirect user to another page after deletion by using useNavigate()
+                window.location.reload();
+               
+            })
+            .catch(error => {
+                console.error('Error deleting student:', error);
+            });
+    };
+    
     const [searchQuery, setSearchQuery] = useState('');
     const [offset, setOffset] = useState(0);
     const [perPage] = useState(15);
@@ -79,15 +116,15 @@ function Students() {
                                                 <td className="border border-black px-4 py-2 hidden md:table-cell">{student.address}</td>
                                                 <td className="border border-black px-4 py-2 hidden md:table-cell">{student.email}</td>
                                                 <td className="border border-black px-4 py-2 flex gap-4 justify-center">
-                                                    <Link to={`/admin-dashboard/students/view`}>
+                                                    <Link to={`/admin-dashboard/students/${student.id}`}>
                                                         <img className='h-6 ' src="/images/eye.png" alt="" />
                                                     </Link>
-                                                    <Link to={`/admin-dashboard/students/1/edit`}>
+                                                    <Link to={`/admin-dashboard/students/${student.id}/edit`}>
                                                         <img className='h-6' src="/images/edit-text.png" alt="" />
                                                     </Link>
-                                                    <Link to={`/admin-dashboard/students/1/delete`}>
-                                                        <img className='h-6' src="/images/delete.png" alt="" />
-                                                    </Link>
+                                                    
+                                                        <img className='h-6' onClick={() => handleDelete(student.id)} src="/images/delete.png" alt="" />
+                                                    
                                                 </td>
                                             </tr>
                                         ))}

@@ -5,12 +5,23 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import Button from '../components/Button';
 import { Link, useNavigate } from 'react-router-dom';
+import { refreshToken } from '../services/authServices';
 
 function Teacher() {
     const { id } = useParams();
     const [teacher, setTeacher] = useState(null);
 
     const navigate = useNavigate();
+    
+    useEffect(() => {
+
+        const accessToken = localStorage.getItem('accessToken');
+        const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
+
+        if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
+             refreshToken();
+        }
+        }, []);
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
@@ -30,8 +41,6 @@ function Teacher() {
     if (!teacher) {
         return <div>Loading...</div>;
     }
-
-    //write function to delete teacher
 
     const handleDelete = () => {
         const token = localStorage.getItem('accessToken');

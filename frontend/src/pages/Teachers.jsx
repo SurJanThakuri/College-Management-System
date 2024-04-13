@@ -6,12 +6,23 @@ import Sidebar from '../components/Sidebar';
 import Button from '../components/Button';
 import SearchBar from '../components/SearchBar';
 import axios from 'axios';
+import { refreshToken } from '../services/authServices';
 
 function Teachers() {
     const [searchQuery, setSearchQuery] = useState('');
     const [offset, setOffset] = useState(0);
     const [perPage] = useState(8); // Change the number of items per page here
     const [teachersData, setTeachersData] = useState([]);
+
+    useEffect(() => {
+
+        const accessToken = localStorage.getItem('accessToken');
+        const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
+
+        if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
+             refreshToken();
+        }
+        }, []);
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');

@@ -99,7 +99,7 @@ const router = createBrowserRouter([
                 )
             },
             {
-                path: "/admin-dashboard/faculties/BCA",
+                path: "/admin-dashboard/faculties/:id",
                 element: (
                     <AuthLayout authentication>
                         {" "}
@@ -117,7 +117,7 @@ const router = createBrowserRouter([
                 )
             },
             {
-                path: "admin-dashboard/faculties/BCA/edit",
+                path: "admin-dashboard/faculties/:id/edit",
                 element: (
                     <AuthLayout authentication>
                         {" "}
@@ -180,7 +180,7 @@ const router = createBrowserRouter([
                 )
             },
             {
-                path: "/admin-dashboard/students/view",
+                path: "/admin-dashboard/students/:id",
                 element: (
                     <AuthLayout authentication>
                         {" "}
@@ -189,7 +189,7 @@ const router = createBrowserRouter([
                 )
             },
             {
-                path: "/admin-dashboard/students/1/edit",
+                path: "/admin-dashboard/students/:id/edit",
                 element: (
                     <AuthLayout authentication>
                         {" "}

@@ -1,36 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import FeeDetailsTable from '../components/FeeDetailsTable';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { refreshToken } from '../services/authServices';
+import Button from '../components/Button';
+
 
 function Student() {
-    const { id } = useParams(); // Assuming id is the parameter for student ID
-
-    // Dummy data for a single student (replace with actual data)
-    const student = {
-        id: id,
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        phone: '123-456-7890',
-        shift: 'Morning',
-        dob: '1990-01-01',
-        gender: 'Male',
-        nationality: 'American',
-        emergencyContact: 'Jane Doe - 987-654-3210',
-        bloodGroup: 'O+',
-        admissionYear: '2022',
-        faculty: 'Science',
-        rollNumber: 'SCI-001',
-        guardianName: 'Jane Doe',
-        guardianRelationship: 'Mother',
-        guardianContact: '987-654-3210',
-        fees: [
-            { semester: '1st Semester', paid: 10000, due: 10000 },
-            { semester: '2nd Semester', paid: 20000, due: 0 },
-        ]
-    };
-
     const fee = [
         {
             semester: 'Semester 1',
@@ -60,6 +39,55 @@ function Student() {
             ]
         },
     ];
+    const { id } = useParams();
+
+    const [student, setStudent] = useState({});
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+
+        const accessToken = localStorage.getItem('accessToken');
+        const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
+
+        if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
+             refreshToken();
+        }
+        }, []);
+
+
+    useEffect(() => {
+        const fetchStudent = async () => {
+            const accessToken = localStorage.getItem('accessToken');
+            try {
+                const response = await axios.get(`http://localhost:8000/api/v1/admins/students/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                });
+                setStudent(response.data.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchStudent(); 
+    }, [id]);
+
+    const handleDelete = () => {
+        const accessToken = localStorage.getItem('accessToken');
+        axios.delete(`http://localhost:8000/api/v1/admins/delete-student/${id}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+            .then(response => {
+                navigate('/admin-dashboard/students');
+            })
+            .catch(error => {
+                console.error('Error deleting student:', error);
+            });
+    };
+
 
     return (
         <div className='container min-w-full min-h-screen bg-[#F0F1F3]'>
@@ -69,7 +97,17 @@ function Student() {
                     <Header title="Admin" />
                     <div className="flex flex-col md:flex-row justify-around bg-[#FFFFFF] p-4 md:p-12 lg:text-left">
                         <div>
+                            <div className="flex justify-center gap-20">
                             <h1 className="text-3xl font-bold pt-8 lg:pt-0">{student.name}</h1>
+                            <div className="button flex justify-center gap-4 md:justify-start">
+                                    <Link to={`/admin-dashboard/students/${id}/edit`}>
+                                        <Button children="Edit" type='button' className='px-6' />
+                                    </Link>
+                                    
+                                        <Button children="Delete" type='button' onClick={handleDelete} bgColor='bg-red-600' hover='hover:bg-red-700' className='px-4' />
+                                    
+                                </div>
+                            </div>
                             <div className="flex mx-auto lg:mx-0 w-4/5 pt-3 border-b-2 border-blue-600 opacity-25"></div>
                             <p className="pt-4 text-base">
                                 <strong>Email:</strong> {student.email}
@@ -103,16 +141,16 @@ function Student() {
                                 <strong>Faculty:</strong> {student.faculty}
                             </p>
                             <p className="pt-4 text-base">
-                                <strong>Roll Number:</strong> {student.rollNumber}
+                                <strong>Roll Number:</strong> {student.rollNo}
                             </p>
                             <p className="pt-4 text-base">
                                 <strong>Guardian's Name:</strong> {student.guardianName}
                             </p>
                             <p className="pt-4 text-base">
-                                <strong>Guardian's Relationship:</strong> {student.guardianRelationship}
+                                <strong>Guardian's Relationship:</strong> {student.guardianRelation}
                             </p>
                             <p className="pt-4 text-base">
-                                <strong>Guardian's Contact:</strong> {student.guardianContact}
+                                <strong>Guardian's Contact:</strong> {student.guardianPhone}
                             </p>
                         </div>
                         <div className="pt-4 text-base">

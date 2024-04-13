@@ -18,7 +18,7 @@ const studentSchema = new Schema({
         required: true
     },
     dob: {
-        type: Date,
+        type: String,
         required: true
     },
     gender: {
@@ -75,12 +75,18 @@ const studentSchema = new Schema({
 },
     {
         timestamps: true
-    })
+    });
+
 
 studentSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
-    this.password = bcrypt.hash(this.password, 10)
-    next()
+    try {
+        const hashedPassword = await bcrypt.hash(this.password, 10);
+        this.password = hashedPassword;
+        next();
+    } catch (error) {
+        next(error);
+    }
 })
 
 studentSchema.methods.isPasswordCorrect = async function(password){

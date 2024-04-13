@@ -21,9 +21,19 @@ const AdminLogin = () => {
     const login = (data) => {
         axios.post('http://localhost:8000/api/v1/admins/login', data)
             .then(response => {
-                const { accessToken } = response.data.data;
+                const { accessToken, refreshToken } = response.data.data;
                 dispatch(authLogin({ accessToken }));
                 localStorage.setItem('accessToken', accessToken);
+                const accessTokenExpiry = new Date();
+                // set expiry time of 1 minute in access token
+                accessTokenExpiry.setDate(accessTokenExpiry.getDate() + 1);
+                localStorage.setItem('accessTokenExpiry', accessTokenExpiry.toISOString());
+
+                localStorage.setItem('refreshToken', refreshToken);
+                const refreshTokenExpiry = new Date();
+                refreshTokenExpiry.setDate(refreshTokenExpiry.getDate() + 10);
+                localStorage.setItem('refreshTokenExpiry', refreshTokenExpiry.toISOString());
+
                 navigate("/admin-dashboard")
             })
             .catch(error => {

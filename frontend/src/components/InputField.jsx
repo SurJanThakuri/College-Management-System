@@ -6,6 +6,7 @@ const InputField = React.forwardRef(function InputField({
   placeholder,
   className,
   options,
+  value,
   ...props
 }, ref) {
   const id = useId();
@@ -27,7 +28,7 @@ const InputField = React.forwardRef(function InputField({
           ref={ref}
         >
           {options.map((option) => (
-            <option key={option} value={option}>
+            <option key={option} value={value}>
               {option}
             </option>
           ))}

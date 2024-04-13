@@ -2,11 +2,37 @@ import { Link } from 'react-router-dom';
 import Faculty from '../components/Faculty';
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '../components/Button';
+import axios from 'axios';
+import { refreshToken } from '../services/authServices';
 
 
 function Faculties() {
+    const [faculties, setFaculties] = useState();
+
+    useEffect(() => {
+
+        const accessToken = localStorage.getItem('accessToken');
+        const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
+
+        if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
+             refreshToken();
+        }
+        }, []);
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('accessToken');
+        axios.get('http://localhost:8000/api/v1/admin/faculties', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }).then((response) => {
+            setFaculties(response.data.data);
+        }).catch((error) => {
+            console.error('Error fetching faculties:', error);
+        });
+    }, [])
 
         return (
             <div className='container min-w-full min-h-screen bg-[#F0F1F3]'>
@@ -21,11 +47,12 @@ function Faculties() {
                         </Link>
                         </div>
                         <div className="faculties flex flex-wrap">
-                       <Link to="/admin-dashboard/faculties/BCA"> <Faculty name="BCA" description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, magni!" imgSrc="/images/BCA.png" /></Link>
-                        <Faculty name="BBM" description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, magni!" imgSrc="/images/BBM.png" />
-                        <Faculty name="BBS" description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, magni!" imgSrc="/images/BBS.png" />
-                        <Faculty name="BSW" description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, magni!" imgSrc="/images/BSW.png" />
-                        <Faculty name="BSW" description="Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure, magni!" imgSrc="/images/BSW.png" />
+                            
+                            {faculties && faculties.map(faculty => (
+                                <Link to={`/admin-dashboard/faculties/${faculty._id}`} key={faculty.name}>
+                                    <Faculty name={faculty.name} description={faculty.description} imgSrc={faculty.coverImage} />
+                                </Link>
+                            ))}
                         </div>
                     </div>
                 </div>

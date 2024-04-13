@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiError } from "../utils/ApiError.js"
 import { Admin } from "../models/admin.model.js"
 import { Teacher } from "../models/teacher.model.js"
+import { Student } from "../models/student.model.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import jwt from "jsonwebtoken"
@@ -176,16 +177,17 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             secure: true
         }
 
-        const { accessToken, newRefreshToken } = await generateAccessAndRefreshTokens(admin._id)
+        const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(admin._id)
+        console.log(accessToken, refreshToken);
 
         return res
             .status(200)
             .cookie("accessToken", accessToken, options)
-            .cookie("refreshToken", newRefreshToken, options)
+            .cookie("refreshToken", refreshToken, options)
             .json(
                 new ApiResponse(
                     200,
-                    { accessToken, refreshToken: newRefreshToken },
+                    { accessToken, refreshToken },
                     "Access Token Refreshed"
                 )
             )
@@ -397,8 +399,6 @@ const updateTeacherDetails = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, teacher, "Account details updated successfully"))
 })
 
-// write a function to delete a specific teacher from db
-
 const deleteTeacher = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
@@ -409,6 +409,172 @@ const deleteTeacher = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(new ApiResponse(200, teacher, "Teacher deleted successfully"));
+
+});
+
+//Student controller through admin access
+const getStudentById = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const student = await Student.findById(id).populate('faculty', 'name');
+    if (!student) {
+        throw new ApiError(404, "Student not found");
+    }
+    const studentData = {
+        id: student._id,
+        name: student.name,
+        email: student.email,
+        address: student.address,
+        phone: student.phone,
+        shift: student.shift,
+        dob: student.dob,
+        gender: student.gender,
+        nationality: student.nationality,
+        faculty: student.faculty.name,
+        rollNo: student.rollNo,
+        emergencyContact: student.emergencyContact,
+        bloodGroup: student.bloodGroup,
+        admissionYear: student.admissionYear,
+        guardianName: student.guardianName,
+        guardianRelation: student.guardianRelation,
+        guardianPhone: student.guardianPhone
+    };
+    return res.status(200).json(
+        new ApiResponse(200, studentData, "Student data fetched successfully")
+    );
+});
+
+
+const getAllStudents = asyncHandler(async (req, res) => {
+    try {
+        const students = await Student.find({}, "-password -refreshToken").populate('faculty', 'name');
+        const studentsData = students.map((student) => {
+            return {
+                id: student._id,
+                name: student.name,
+                email: student.email,
+                address: student.address,
+                phone: student.phone,
+                shift: student.shift,
+                dob: student.dob,
+                gender: student.gender,
+                nationality: student.nationality,
+                faculty: student.faculty.name, 
+                rollNo: student.rollNo,
+                emergencyContact: student.emergencyContact,
+                bloodGroup: student.bloodGroup,
+                admissionYear: student.admissionYear,
+                guardianName: student.guardianName,
+                guardianRelation: student.guardianRelation,
+                guardianPhone: student.guardianPhone
+            };
+        });
+        return res.status(200).json(
+            new ApiResponse(200, studentsData, "All students data fetched successfully")
+        )
+    } catch (error) {
+        throw new ApiError(500, "Something went wrong while getting all students data");
+    }
+});
+
+
+
+const registerStudent = asyncHandler(async (req, res) => {
+    // get student details from frontend
+    const { name, email, address, password, phone, shift, dob, gender, nationality, faculty, rollNo, emergencyContact, bloodGroup, admissionYear, guardianName, guardianRelation, guardianPhone } = req.body
+
+    // validation - not empty
+    if ([name, email, address, password, phone, shift, dob, gender, nationality, faculty, rollNo, emergencyContact, bloodGroup, admissionYear, guardianName, guardianRelation, guardianPhone].some((field) => field?.trim() === "")) {
+        throw new ApiError(400, "All fields are required")
+    }
+
+    // check if account already exists - email
+    const existedStudent = await Student.findOne({ email })
+    if (existedStudent) {
+        throw new ApiError(409, "Student with this email already exists")
+    }
+
+    // create teacher object - create entry in db
+    const student = await Student.create({
+        name,
+        email,
+        address,
+        password,
+        phone,
+        shift,
+        dob,
+        gender,
+        nationality,
+        faculty,
+        rollNo,
+        emergencyContact,
+        bloodGroup,
+        admissionYear,
+        guardianName,
+        guardianRelation,
+        guardianPhone
+    })
+
+    // check for student creation - remove password and refresh token field from response
+    const createdStudent = await Student.findById(student._id).select("-password -refreshToken")
+
+    if (!createdStudent) {
+        throw new ApiError(500, "Failed to create student")
+    }
+
+    // return response
+    return res.status(201).json(
+        new ApiResponse(200, createdStudent, "Student created successfully")
+    )
+})
+
+const updateStudentDetails = asyncHandler(async (req, res) => {
+    const {id} = req.params;
+    const { name, email, phone, address, shift, dob, gender, nationality, faculty, rollNo, emergencyContact, bloodGroup, admissionYear, guardianName, guardianRelation, guardianPhone } = req.body;
+
+    if (!name || !email || !phone || !address || !shift || !dob || !gender  || !nationality || !faculty || !rollNo || !emergencyContact || !bloodGroup || !admissionYear || !guardianName || !guardianRelation || !guardianPhone) {
+        throw new ApiError(400, "All fields are required")
+    }
+
+    const student = await Student.findByIdAndUpdate(
+        id,
+        {
+            $set: {
+                name: name,
+                email: email,
+                address: address,
+                phone: phone,
+                shift: shift,
+                dob: dob,
+                gender: gender,
+                nationality: nationality,
+                faculty: faculty,
+                rollNo: rollNo,
+                emergencyContact: emergencyContact,
+                bloodGroup: bloodGroup,
+                admissionYear: admissionYear,
+                guardianName: guardianName,
+                guardianRelation: guardianRelation,
+                guardianPhone: guardianPhone
+            }
+        },
+        { new: true }
+    ).select("-password")
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, student, "Account details updated successfully"))
+})
+
+const deleteStudent = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const student = await Student.findByIdAndDelete(id);
+    if (!student) {
+        throw new ApiError(404, "Student not found");
+    }
+    return res
+        .status(200)
+        .json(new ApiResponse(200, student, "Student deleted successfully"));
 
 });
 
@@ -427,4 +593,10 @@ export {
     registerTeacher,
     updateTeacherDetails,
     deleteTeacher,
+
+    getStudentById,
+    getAllStudents,
+    registerStudent,
+    updateStudentDetails,
+    deleteStudent
 }

@@ -15,6 +15,16 @@ function EditTeacher() {
     const [teacher, setTeacher] = useState(null);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+
+        const accessToken = localStorage.getItem('accessToken');
+        const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
+
+        if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
+             refreshToken();
+        }
+        }, []);
     
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
