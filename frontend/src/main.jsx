@@ -243,7 +243,7 @@ const router = createBrowserRouter([
                 )
             },
             {
-                path: "/admin-dashboard/notices/1/edit",
+                path: "/admin-dashboard/notices/:id/edit",
                 element: (
                     <AuthLayout authentication>
                         {" "}

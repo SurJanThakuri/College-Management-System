@@ -1,33 +1,64 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import Button from '../components/Button';
 import SearchBar from '../components/SearchBar';
 import ReactPaginate from 'react-paginate';
+import axios from 'axios';
+import { refreshToken } from '../services/authServices';
+
 
 function NoticeList() {
-    const [notices, setNotices] = useState([
-        { id: 1, title: 'hi', description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, necessitatibus.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, necessitatibus.' },
-        { id: 2, title: 'hello', description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, necessitatibus.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, necessitatibus.' },
-        { id: 3, title: 'first', description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, necessitatibus.' },
-        { id: 4, title: 'second', description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, necessitatibus.' },
-        { id: 5, title: 'holiday', description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, necessitatibus.' },
-        { id: 6, title: 'leave', description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, necessitatibus.' },
-        { id: 7, title: 'public holiday', description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, necessitatibus.' },
-        { id: 8, title: 'more', description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, necessitatibus.' },
-        { id: 9, title: 'exam', description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, necessitatibus.' },
-        { id: 10, title: 'fee', description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, necessitatibus.' },
-        { id: 11, title: 'exam routine published', description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet, necessitatibus.' },
-    ]);
+    const [notices, setNotices] = useState([]);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+
+        const accessToken = localStorage.getItem('accessToken');
+        const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
+
+        if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
+             refreshToken();
+        }
+        }, []);
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('accessToken');
+        axios.get('http://localhost:8000/api/v1/admin/notices', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+            .then(response => {
+                setNotices(response.data.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        }, []);
+
+
+    const handleDelete = (id) => {
+        const accessToken = localStorage.getItem('accessToken');
+        axios.delete(`http://localhost:8000/api/v1/admin/notices/delete/${id}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+            .then(response => {
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error deleting notice:', error);
+            });
+    };
 
     const [searchQuery, setSearchQuery] = useState('');
     const [offset, setOffset] = useState(0);
     const [perPage] = useState(5);
 
-    const handleDelete = (id) => {
-        setNotices(notices.filter(notice => notice.id !== id));
-    };
 
     const [expandedNotice, setExpandedNotice] = useState(null);
 
@@ -72,20 +103,20 @@ function NoticeList() {
                             </div>
                             <SearchBar onSearch={handleSearch} />
                             {noticesToShow.map(notice => (
-                                <div key={notice.id} className="flex justify-between items-center mb-4 bg-white p-4 rounded-lg shadow-md cursor-pointer" onClick={() => toggleExpand(notice.id)}>
+                                <div key={notice._id} className="flex justify-between items-center mb-4 bg-white p-4 rounded-lg shadow-md cursor-pointer" onClick={() => toggleExpand(notice._id)}>
                                     <div className='w-full'>
                                         <div className="flex justify-between items-center">
                                             <h2 className="text-lg font-semibold">{notice.title}</h2>
                                             <div className="flex gap-3 justify-end mt-2 p-2 w-[100px]">
-                                                <Link to={`/admin-dashboard/notices/${notice.id}/edit`}>
+                                                <Link to={`/admin-dashboard/notices/${notice._id}/edit`}>
                                                     <img className='h-6' src="/images/edit-text.png" alt="" />
                                                 </Link>
-                                                <button onClick={() => handleDelete(notice.id)}>
+                                                <button onClick={() => handleDelete(notice._id)}>
                                                     <img className='h-6' src="/images/delete.png" alt="" />
                                                 </button>
                                             </div>
                                         </div>
-                                        {expandedNotice === notice.id && (
+                                        {expandedNotice === notice._id && (
                                             <div className="text-gray-600 mt-2">{notice.description}</div>
                                         )}
 

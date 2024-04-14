@@ -1,19 +1,28 @@
-import React from 'react';
+import React, { useId } from 'react';
 
-const TextAreaField = ({ label, name, ...rest }) => {
+const TextAreaField = React.forwardRef(function TextAreaField({
+  label,
+  name,
+  className,
+  ...props
+}, ref) {
+  const id = useId();
   return (
     <div className="mb-4">
-      <label className="block mb-2" htmlFor={name}>
+      {label && (
+        <label className="block text-[#35344E] mt-2" htmlFor={id}>
         {label}
       </label>
+      )}
       <textarea
-        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        id={name}
+        className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-[#673EE6] ${className}`}
+        id={id}
         name={name}
-        {...rest}
+        {...props}
+        ref={ref}
       />
     </div>
   );
-};
+});
 
 export default TextAreaField;

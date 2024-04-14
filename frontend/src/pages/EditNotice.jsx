@@ -5,28 +5,61 @@ import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import Button from '../components/Button';
 import InputField from '../components/InputField';
+import TextAreaField from '../components/TextAreaField';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { refreshToken } from '../services/authServices';
 
 function EditNotice() {
+
     const { id } = useParams();
-    const [notice, setNotice] = useState({ title: '', description: '' });
+    const [notice, setNotice] = useState(null);
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
-    useEffect(() => {
-        // Mock data for an existing teacher
-        const notice = {
-            title: 'This is the title',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        };
+    const navigate = useNavigate();
 
-        // Set default values for each field
-        Object.keys(notice).forEach(key => setValue(key, notice[key]));
-    }, [setValue]);
+    useEffect(() => {
+        const accessToken = localStorage.getItem('accessToken');
+        const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
+
+        if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
+            refreshToken();
+        }
+    }, []);
+    
+
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        axios.get(`http://localhost:8000/api/v1/admin/notices/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                setNotice(response.data.data);
+
+                setValue('date', response.data.data.date);
+                setValue('title', response.data.data.title);
+            })
+            .catch(error => {
+                console.error('Error fetching notice:', error);
+            });
+    }, []);
+
 
     const onSubmit = (data) => {
-        // Handle form submission (e.g., send data to server)
-        console.log('Form submitted:', data);
-        // You can add logic here to update the notice data on the server
-        // and handle the response as needed
+        const token = localStorage.getItem('accessToken');
+        axios.patch(`http://localhost:8000/api/v1/admin/notices/update/${id}`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                navigate('/admin-dashboard/notices');
+            })
+            .catch(error => {
+                console.error('Error editing notice:', error);
+            });
     };
 
     return (
@@ -40,6 +73,13 @@ function EditNotice() {
                             <h1 className="text-2xl font-bold mb-4">Edit Notice</h1>
                             <form onSubmit={handleSubmit(onSubmit)} className='w-full md:w-1/2'>
                                 <InputField
+                                    type="date"
+                                    label="Date:"
+                                    {...register("date", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.date && <span className='text-red-600'>This field is required</span>}
+                                <InputField
                                     type="text"
                                     label="Title:"
                                     placeholder="Notice Title"
@@ -47,12 +87,14 @@ function EditNotice() {
                                     className="mb-2"
                                 />
                                 {errors.title && <span className='text-red-600'>This field is required</span>}
-                                <InputField
-                                    type="textarea"
+                                
+                                <TextAreaField
                                     label="Description:"
                                     placeholder="Notice Description"
+                                    defaultValue={notice?.description}
                                     {...register("description", { required: true })}
-                                    className="mb-2"
+                                    className="mb-2 w-full"
+                                    rows={3}
                                 />
                                 {errors.description && <span className='text-red-600'>This field is required</span>}
                                <div>

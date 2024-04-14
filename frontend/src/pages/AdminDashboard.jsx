@@ -62,6 +62,7 @@ const AdminDashboard = () => {
                 console.error(error);
             });
     }, []);
+    
 
     return (
         <div className='container min-w-full min-h-screen bg-[#F0F1F3]'>
