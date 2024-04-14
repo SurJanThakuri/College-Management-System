@@ -112,7 +112,7 @@ function Students() {
                                         {studentsToShow.map(student => (
                                             <tr key={student.id}>
                                                 <td className="border border-black px-4 py-2">{student.name}</td>
-                                                <td className="border border-black px-4 py-2 hidden sm:table-cell">{student.faculty}</td>
+                                                <td className="border border-black px-4 py-2 hidden sm:table-cell">{student.faculty.name}</td>
                                                 <td className="border border-black px-4 py-2 hidden md:table-cell">{student.address}</td>
                                                 <td className="border border-black px-4 py-2 hidden md:table-cell">{student.email}</td>
                                                 <td className="border border-black px-4 py-2 flex gap-4 justify-center">

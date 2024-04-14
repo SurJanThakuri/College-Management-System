@@ -415,7 +415,7 @@ const deleteTeacher = asyncHandler(async (req, res) => {
 //Student controller through admin access
 const getStudentById = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const student = await Student.findById(id).populate('faculty', 'name');
+    const student = await Student.findById(id).populate('faculty', 'id name');
     if (!student) {
         throw new ApiError(404, "Student not found");
     }
@@ -429,7 +429,7 @@ const getStudentById = asyncHandler(async (req, res) => {
         dob: student.dob,
         gender: student.gender,
         nationality: student.nationality,
-        faculty: student.faculty.name,
+        faculty: student.faculty,
         rollNo: student.rollNo,
         emergencyContact: student.emergencyContact,
         bloodGroup: student.bloodGroup,
@@ -446,7 +446,7 @@ const getStudentById = asyncHandler(async (req, res) => {
 
 const getAllStudents = asyncHandler(async (req, res) => {
     try {
-        const students = await Student.find({}, "-password -refreshToken").populate('faculty', 'name');
+        const students = await Student.find({}, "-password -refreshToken").populate('faculty', 'id name');
         const studentsData = students.map((student) => {
             return {
                 id: student._id,
@@ -458,7 +458,7 @@ const getAllStudents = asyncHandler(async (req, res) => {
                 dob: student.dob,
                 gender: student.gender,
                 nationality: student.nationality,
-                faculty: student.faculty.name, 
+                faculty: student.faculty, 
                 rollNo: student.rollNo,
                 emergencyContact: student.emergencyContact,
                 bloodGroup: student.bloodGroup,

@@ -5,50 +5,93 @@ import Button from '../components/Button';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import InputField from '../components/InputField';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { refreshToken } from '../services/authServices';
 
 function EditPayment() {
     const { id } = useParams();
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
     const [payment, setPayment] = useState(null);
     const [faculties, setFaculties] = useState([]);
-    const [semesters, setSemesters] = useState([]);
-    const [students, setStudents] = useState([]);
+    const [students, setStudents] = useState([null]);
 
-    // Simulated fetch payment data function
-    const fetchPaymentData = (paymentId) => {
-        // Replace this with your actual fetch logic
-        return {
-            id: paymentId,
-            date: '2023-01-01',
-            amount: '20000',
-            name: 'John Doe',
-            semester: 'first',
-            faculty: 'BCA',
-        };
-    };
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const paymentData = fetchPaymentData(id);
-        setPayment(paymentData);
 
-        // Fetch faculties, semesters, and students from the database or an API
-        // For now, use dummy data
-        const dummyFaculties = ['BCA', 'BBA', 'BCom', 'BSc', 'BA'];
-        const dummySemesters = ['First', 'Second', 'Third', 'Fourth'];
-        const dummyStudents = ['John Doe', 'Jane Smith', 'Alice Johnson', 'Bob Brown', 'Charlie Wilson'];
-        setFaculties(dummyFaculties);
-        setSemesters(dummySemesters);
-        setStudents(dummyStudents);
+        const accessToken = localStorage.getItem('accessToken');
+        const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
+
+        if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
+            refreshToken();
+        }
+    }, []);
+
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        Promise.all([
+            axios.get('http://localhost:8000/api/v1/admin/faculties', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }),
+            axios.get('http://localhost:8000/api/v1/admins/students', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        ])
+            .then(([facultiesResponse, studentsResponse]) => {
+                setFaculties(facultiesResponse.data.data);
+                setStudents(studentsResponse.data.data);
+            })
+            .catch(error => {
+                console.error('Error fetching faculties:', error);
+            });
+    }, []);
+
+
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('accessToken');
+        axios.get(`http://localhost:8000/api/v1/admin/payment-logs/${id}`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+            .then(response => {
+                setPayment(response.data.data);
+
+                setValue('date', response.data.data.date);
+                setValue('amount', response.data.data.amount);
+                setValue('semester', response.data.data.semester);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
     }, [id]);
-
-    const onSubmit = (data) => {
-        // Handle form submission (e.g., send data to server)
-        console.log('Form submitted:', data);
-    };
 
     if (!payment) {
         return <div>Loading...</div>;
     }
+
+    const onSubmit = (data) => {
+        const accessToken = localStorage.getItem('accessToken');
+        axios.patch(`http://localhost:8000/api/v1/admin/payment-logs/update/${id}`, data, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+            .then(response => {
+                navigate(`/admin-dashboard/payments`);
+
+            })
+            .catch(error => {
+                console.error('Error updating student:', error);
+            });
+    };
 
     return (
         <div className='container min-w-full min-h-screen bg-[#F0F1F3]'>
@@ -64,7 +107,6 @@ function EditPayment() {
                                     type="date"
                                     label="Date:"
                                     placeholder="Payment Date"
-                                    defaultValue={payment.date}
                                     {...register("date", { required: "Date is required" })}
                                     className="mb-2"
                                 />
@@ -73,39 +115,56 @@ function EditPayment() {
                                     type="text"
                                     label="Amount:"
                                     placeholder="Payment Amount"
-                                    defaultValue={payment.amount}
                                     {...register("amount", { required: "Amount is required" })}
                                     className="mb-2"
                                 />
                                 {errors.amount && <span className='text-red-600'>{errors.amount.message}</span>}
-                                <InputField
-                                    label="Name:"
-                                    type="select"
-                                    options={students}
-                                    defaultValue={payment.name}
-                                    {...register("name", { required: "Name is required" })}
-                                    className="mb-2"
-                                />
-                                {errors.name && <span className='text-red-600'>{errors.name.message}</span>}
-                                <InputField
-                                    label="Faculty:"
-                                    type="select"
-                                    options={faculties}
-                                    defaultValue={payment.faculty}
-                                    {...register("faculty", { required: "Faculty is required" })}
-                                    className="mb-2"
-                                />
-                                {errors.semester && <span className='text-red-600'>{errors.faculty.message}</span>}
+                                <label htmlFor="studentName" className="block mb-2">Select Student:</label>
+                                <select
+                                    name="studentName"
+                                    {...register("studentName", { required: true })}
+                                    defaultValue={payment.studentName._id}
+                                    className="w-full h-10 rounded-md border-2 mb-2"
+                                >
+                                    <option value="">Select Student</option>
+                                    {students && students.map((student) => (
+                                        <option
+                                            key={student.id}
+                                            value={student.id}
+                                        >
+                                            {student.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.studentName && <span className='text-red-600'>{errors.studentName.message}</span>}
+                                <label htmlFor="faculty" className="block mb-2">Select Faculty:</label>
+                                <select
+                                    name="faculty"
+                                    {...register("faculty", { required: true })}
+                                    defaultValue={payment.faculty._id}
+                                    className="w-full h-10 rounded-md border-2 mb-2"
+                                >
+                                    <option value="">Select a faculty</option>
+                                    {faculties && faculties.map((faculty) => (
+                                        <option
+                                            key={faculty._id}
+                                            value={faculty._id}
+                                        >
+                                            {faculty.name}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                {errors.faculty && <span className='text-red-600'>{errors.faculty.message}</span>}
 
                                 <InputField
                                     label="Semester:"
-                                    type="select"
-                                    options={semesters}
-                                    defaultValue={payment.semester}
+                                    type="text"
+                                    placeholder="Semester"
                                     {...register("semester", { required: "Semester is required" })}
                                     className="mb-2"
                                 />
-                                {errors.faculty && <span className='text-red-600'>{errors.semester.message}</span>}
+                                {errors.semester && <span className='text-red-600'>{errors.semester.message}</span>}
                                 <Button children="Update Payment" type='submit' className='my-3 px-3' />
                             </form>
                         </div>

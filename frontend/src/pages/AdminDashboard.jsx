@@ -31,17 +31,33 @@ const AdminDashboard = () => {
     };
 
     const [teachers, setTeachers] = useState(null);
+    const [faculties, setFaculties] = useState(null);
+    const [students, setStudents] = useState(null);
+
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
-        axios.get('http://localhost:8000/api/v1/admins/teachers',  {
+        Promise.all([
+            axios.get('http://localhost:8000/api/v1/admins/teachers',  {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }),
+        axios.get('http://localhost:8000/api/v1/admin/faculties',  {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }),
+        axios.get('http://localhost:8000/api/v1/admins/students',  {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
-            .then(response => {
-                setTeachers(response.data.data.length);
-                console.log(response.data.data.length);
-            })
+        ])
+        .then(([teachersResponse, facultiesResponse, studentsResponse]) => {
+            setTeachers(teachersResponse.data.data.length);
+            setFaculties(facultiesResponse.data.data.length);
+            setStudents(studentsResponse.data.data.length);
+        })
             .catch(error => {
                 console.error(error);
             });
@@ -54,8 +70,8 @@ const AdminDashboard = () => {
                 <div className="w-5/6 p-2 pt-0 bg-[#F0F1F3] md:absolute md:right-0 absolute right-8 ">
                     <Header title="Admin" />
                     <div className="flex justify-around items-center mb-8 flex-wrap gap-2">
-                        <Card title="Total Students" imgSrc='/images/student.png' number='1000' />
-                        <Card title="Faculties" imgSrc='/images/education.png' number='10' />
+                        <Card title="Total Students" imgSrc='/images/student.png' number={students} />
+                        <Card title="Faculties" imgSrc='/images/education.png' number={faculties} />
                         <Card title="Total Teachers" imgSrc='/images/teacher.png' number={teachers} />
                         <Card title="Money Collected" imgSrc='/images/money.png' number='40,00,000' />
                     </div>

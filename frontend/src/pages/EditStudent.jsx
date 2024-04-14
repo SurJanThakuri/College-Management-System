@@ -58,7 +58,6 @@ function EditStudent() {
                 setValue('address', response.data.data.address);
                 setValue('dob', response.data.data.dob);
                 setValue('gender', response.data.data.gender);
-                setValue('faculty', response.data.data.faculty);
                 setValue('nationality', response.data.data.nationality);
                 setValue('rollNo', response.data.data.rollNo);
                 setValue('emergencyContact', response.data.data.emergencyContact);
@@ -87,7 +86,6 @@ function EditStudent() {
             }
         })
             .then(response => {
-                console.log('Teacher updated successfully:', response.data);
                 navigate(`/admin-dashboard/students/${id}`);
 
             })
@@ -170,18 +168,18 @@ function EditStudent() {
                                 {errors.gender && <span className='text-red-600'>This field is required</span>}
                                 <label htmlFor="faculty" className="block mb-2">Select Faculty:</label>
                                 <select
-                                    name="faculty"
-                                    id="faculty"
+                                    name="faculty"                                     
                                     {...register("faculty", { required: true })}
+                                    defaultValue={student.faculty._id}
                                     className="w-full h-10 rounded-md border-2 mb-2"
-                                >
+                                >   
                                     <option value="">Select a faculty</option>
                                     {faculties.map((faculty) => (
                                         <option
                                             key={faculty._id}
                                             value={faculty._id}
                                         >
-                                            {faculty.name}
+                                         {faculty.name}
                                         </option>
                                     ))}
                                 </select>
@@ -252,7 +250,7 @@ function EditStudent() {
                                 />
                                 {errors.guardianContact && <span className='text-red-600'>This field is required</span>}
                                 <div>
-                                    <Button children="Add Student" type='submit' className='my-3 px-3' />
+                                    <Button children="Update Student" type='submit' className='my-3 px-3' />
                                 </div>
                             </form>
                         </div>

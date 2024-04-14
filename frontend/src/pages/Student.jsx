@@ -51,9 +51,9 @@ function Student() {
         const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
 
         if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
-             refreshToken();
+            refreshToken();
         }
-        }, []);
+    }, []);
 
 
     useEffect(() => {
@@ -70,7 +70,7 @@ function Student() {
                 console.error(error);
             }
         };
-        fetchStudent(); 
+        fetchStudent();
     }, [id]);
 
     const handleDelete = () => {
@@ -98,14 +98,14 @@ function Student() {
                     <div className="flex flex-col md:flex-row justify-around bg-[#FFFFFF] p-4 md:p-12 lg:text-left">
                         <div>
                             <div className="flex justify-center gap-20">
-                            <h1 className="text-3xl font-bold pt-8 lg:pt-0">{student.name}</h1>
-                            <div className="button flex justify-center gap-4 md:justify-start">
+                                <h1 className="text-3xl font-bold pt-8 lg:pt-0">{student.name}</h1>
+                                <div className="button flex justify-center gap-4 md:justify-start">
                                     <Link to={`/admin-dashboard/students/${id}/edit`}>
                                         <Button children="Edit" type='button' className='px-6' />
                                     </Link>
-                                    
-                                        <Button children="Delete" type='button' onClick={handleDelete} bgColor='bg-red-600' hover='hover:bg-red-700' className='px-4' />
-                                    
+
+                                    <Button children="Delete" type='button' onClick={handleDelete} bgColor='bg-red-600' hover='hover:bg-red-700' className='px-4' />
+
                                 </div>
                             </div>
                             <div className="flex mx-auto lg:mx-0 w-4/5 pt-3 border-b-2 border-blue-600 opacity-25"></div>
@@ -124,7 +124,7 @@ function Student() {
                             <p className="pt-4 text-base">
                                 <strong>Gender:</strong> {student.gender}
                             </p>
-                            
+
                             <p className="pt-4 text-base">
                                 <strong>Nationality:</strong> {student.nationality}
                             </p>
@@ -137,9 +137,12 @@ function Student() {
                             <p className="pt-4 text-base">
                                 <strong>Admission Year:</strong> {student.admissionYear}
                             </p>
-                            <p className="pt-4 text-base">
-                                <strong>Faculty:</strong> {student.faculty}
-                            </p>
+                            {student.faculty && (
+                                <p className="pt-4 text-base">
+                                    <strong>Faculty:</strong> {student.faculty.name}
+                                </p>
+                            )}
+
                             <p className="pt-4 text-base">
                                 <strong>Roll Number:</strong> {student.rollNo}
                             </p>
@@ -155,7 +158,7 @@ function Student() {
                         </div>
                         <div className="pt-4 text-base">
                             <div className='font-bold mb-4 text-lg'>Fee Details Table</div>
-                        <FeeDetailsTable data={fee} />
+                            <FeeDetailsTable data={fee} />
                         </div>
                     </div>
                 </div>

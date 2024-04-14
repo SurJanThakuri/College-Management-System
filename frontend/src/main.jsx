@@ -216,7 +216,7 @@ const router = createBrowserRouter([
                 )
             },
             {
-                path: "/admin-dashboard/payments/1/edit",
+                path: "/admin-dashboard/payments/:id/edit",
                 element: (
                     <AuthLayout authentication>
                         {" "}
