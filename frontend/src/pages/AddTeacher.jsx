@@ -7,6 +7,7 @@ import InputField from '../components/InputField';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import { refreshToken } from '../services/authServices';
+import API_URL from '../api';
 
 function AddTeacher() {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -38,7 +39,7 @@ function AddTeacher() {
             formData.append('profilePicture', profilePicture);
 
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axios.post('http://localhost:8000/api/v1/admins/teacher/register', formData, {
+            const response = await axios.post(`${API_URL}/admins/teacher/register`, formData, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     'Content-Type': 'multipart/form-data'

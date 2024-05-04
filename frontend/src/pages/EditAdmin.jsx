@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 import InputField from '../components/InputField';
 import Button from '../components/Button';
 import axios from 'axios';
+import API_URL from '../api';
 
 function EditAdmin() {
     const [adminData, setAdminData] = useState(null);
@@ -14,7 +15,7 @@ function EditAdmin() {
         const token = localStorage.getItem('accessToken');
  
         if (token) {
-            axios.get('http://localhost:8000/api/v1/admins/current-user', {
+            axios.get(`${API_URL}/admins/current-user`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -31,7 +32,7 @@ function EditAdmin() {
     const onSubmit = (data) => {
         const token = localStorage.getItem('accessToken');
         
-        axios.patch('http://localhost:8000/api/v1/admins/update-account', data, {
+        axios.patch(`${API_URL}/admins/update-account`, data, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

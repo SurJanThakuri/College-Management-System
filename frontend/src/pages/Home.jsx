@@ -3,6 +3,7 @@ import InputField from '../components/InputField'
 import TextAreaField from '../components/TextAreaField'
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 
 function Home() {
     const {
@@ -35,9 +36,9 @@ function Home() {
                         <li className='hover:text-[#673EE6] transition-all duration-300 hover:border-b-4 hover:border-[#673EE6]'><a href="#contact">Contact</a></li>
                     </ul>
                 </div>
-                <div className='login mt-3 mr-2'>
+                <Link to={'/admin-login'} className='login mt-3 mr-2'>
                     <Button children="Login" className='px-4 transition-all duration-300 hover:shadow-md hover:shadow-gray-400 ' />
-                </div>
+                </Link>
             </header>
             <main className='scroll-snap-type-y mandatory'>
                 <div id='home' className="hero-section scroll-snap-start h-[100vh] w-full bg-white" style={{ backgroundImage: `url(/images/hero.jpg)`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }}>

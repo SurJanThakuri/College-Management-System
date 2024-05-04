@@ -8,6 +8,7 @@ import InputField from '../components/InputField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { refreshToken } from '../services/authServices';
+import API_URL from '../api';
 
 function EditPayment() {
     const { id } = useParams();
@@ -31,12 +32,12 @@ function EditPayment() {
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
         Promise.all([
-            axios.get('http://localhost:8000/api/v1/admin/faculties', {
+            axios.get(`${API_URL}/admin/faculties`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             }),
-            axios.get('http://localhost:8000/api/v1/admins/students', {
+            axios.get(`${API_URL}/admins/students`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -55,7 +56,7 @@ function EditPayment() {
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.get(`http://localhost:8000/api/v1/admin/payment-logs/${id}`, {
+        axios.get(`${API_URL}/admin/payment-logs/${id}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -79,7 +80,7 @@ function EditPayment() {
 
     const onSubmit = (data) => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.patch(`http://localhost:8000/api/v1/admin/payment-logs/update/${id}`, data, {
+        axios.patch(`${API_URL}/admin/payment-logs/update/${id}`, data, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }

@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import CoverImagePopup from '../components/CoverImagePopup';
 import { refreshToken } from '../services/authServices';
+import API_URL from '../api';
 
 function EditFaculty() {
     const [showCoverImagePopup, setShowCoverImagePopup] = useState(false);
@@ -36,7 +37,7 @@ function EditFaculty() {
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.get(`http://localhost:8000/api/v1/admin/faculties/${id}`, {
+        axios.get(`${API_URL}/admin/faculties/${id}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -59,7 +60,7 @@ function EditFaculty() {
 
     const onSubmit = async (data) => {
         const accessToken = localStorage.getItem('accessToken');
-        await axios.patch(`http://localhost:8000/api/v1/admin/faculties/update/${id}`, data, {
+        await axios.patch(`${API_URL}/admin/faculties/update/${id}`, data, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }

@@ -31,12 +31,10 @@ import AddPayment from './pages/AddPayment.jsx'
 import EditPayment from './pages/EditPayment.jsx'
 import Routines from './pages/Routines.jsx'
 import Routine from './pages/Routine.jsx'
-import AddClass from './pages/AddClass.jsx'
-import ClassTimes from './pages/ClassTimes.jsx'
-import EditClass from './pages/EditClass.jsx'
 import EditAdmin from './pages/EditAdmin.jsx'
 import store from './store/store.js'
 import AuthLayout from './components/AuthLayout.jsx'
+import AddRoutine from './pages/AddRoutine.jsx'
 
 const router = createBrowserRouter([
     {
@@ -288,32 +286,14 @@ const router = createBrowserRouter([
                 )
             },
            {
-            path: "/admin-dashboard/routines/BCA/add-class",
+            path: "/admin-dashboard/routines/add-routine",
             element: (
                 <AuthLayout authentication>
                     {" "}
-                    <AddClass />
+                    <AddRoutine />
                 </AuthLayout>
             )
            },
-           {
-            path: "/admin-dashboard/routines/BCA/edit-class",
-            element: (
-                <AuthLayout authentication>
-                    {" "}
-                    <EditClass />
-                </AuthLayout>
-            )
-           },
-           {
-            path: "/admin-dashboard/routines/class-times",
-            element: (
-                <AuthLayout authentication>
-                    {" "}
-                    <ClassTimes />
-                </AuthLayout>
-            )
-           }
         ],
     },
 ])

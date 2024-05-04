@@ -171,9 +171,9 @@ const getCurrentStudent = asyncHandler(async (req, res) => {
 })
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
-    const { name, email, phone, address, dob, gender, shift, nationality, faculty, rollNo, emergencyContact, bloodGroup, admissionYear, guardianName, guardianRelation, guardianPhone } = req.body;
+    const { name, email, phone, address, dob, gender, shift, nationality, faculty, rollNo, emergencyContact, bloodGroup, admissionYear, guardianName, guardianRelation, guardianPhone, totalFee } = req.body;
 
-    if (!name || !email || !phone || !address || !shift || !dob || !gender  || !nationality || !faculty || !rollNo || !emergencyContact || !bloodGroup || !admissionYear || !guardianName || !guardianRelation || !guardianPhone) {
+    if (!name || !email || !phone || !address || !shift || !dob || !gender  || !nationality || !faculty || !rollNo || !emergencyContact || !bloodGroup || !admissionYear || !guardianName || !guardianRelation || !guardianPhone || !totalFee) {
         throw new ApiError(400, "All fields are required")
     }
 
@@ -196,7 +196,8 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
                 admissionYear: admissionYear,
                 guardianName: guardianName,
                 guardianRelation: guardianRelation,
-                guardianPhone: guardianPhone
+                guardianPhone: guardianPhone,
+                totalFee: totalFee
             }
         },
         { new: true }

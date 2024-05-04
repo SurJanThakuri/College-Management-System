@@ -7,6 +7,7 @@ import InputField from '../components/InputField';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../api';
 
 function EditStudent() {
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
@@ -30,7 +31,7 @@ function EditStudent() {
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.get('http://localhost:8000/api/v1/admin/faculties', {
+        axios.get(`${API_URL}/admin/faculties`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 'Content-Type': 'multipart/form-data'
@@ -46,7 +47,7 @@ function EditStudent() {
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.get(`http://localhost:8000/api/v1/admins/students/${id}`, {
+        axios.get(`${API_URL}/admins/students/${id}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -58,6 +59,7 @@ function EditStudent() {
                 setValue('address', response.data.data.address);
                 setValue('dob', response.data.data.dob);
                 setValue('gender', response.data.data.gender);
+                setValue('totalFee', response.data.data.totalFee);
                 setValue('nationality', response.data.data.nationality);
                 setValue('rollNo', response.data.data.rollNo);
                 setValue('emergencyContact', response.data.data.emergencyContact);
@@ -80,7 +82,7 @@ function EditStudent() {
 
     const onSubmit = (data) => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.patch(`http://localhost:8000/api/v1/admins/update-student/${id}`, data, {
+        axios.patch(`${API_URL}/admins/update-student/${id}`, data, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -166,6 +168,14 @@ function EditStudent() {
                                     className="mb-2"
                                 />
                                 {errors.gender && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="text"
+                                    label="Total Fee:"
+                                    placeholder="Total Fee"
+                                    {...register("totalFee", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.totalFee && <span className='text-red-600'>This field is required</span>}
                                 <label htmlFor="faculty" className="block mb-2">Select Faculty:</label>
                                 <select
                                     name="faculty"                                     

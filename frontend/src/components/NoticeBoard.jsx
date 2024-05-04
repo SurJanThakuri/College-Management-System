@@ -1,6 +1,7 @@
 import React, { useEffect , useState} from 'react'
 import axios from 'axios'
 import { refreshToken } from '../services/authServices'
+import API_URL from '../api';
 
 
 function NoticeBoard() {
@@ -19,7 +20,7 @@ function NoticeBoard() {
 
     useEffect(() => {
       const accessToken = localStorage.getItem('accessToken');
-      axios.get('http://localhost:8000/api/v1/admin/notices', {
+      axios.get(`${API_URL}/admin/notices`, {
           headers: {
               Authorization: `Bearer ${accessToken}`
           }

@@ -64,6 +64,10 @@ const studentSchema = new Schema({
     guardianPhone: {
         type: String
     },
+    totalFee: {
+        type: Number,
+        required: true
+    },
     password: {
         type: String,
         required: [true, "Password is required"]

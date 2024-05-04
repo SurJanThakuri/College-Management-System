@@ -8,6 +8,7 @@ import InputField from '../components/InputField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { refreshToken } from '../services/authServices';
+import API_URL from '../api';
 
 function AddPayment() {
     const {
@@ -34,12 +35,12 @@ function AddPayment() {
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
         Promise.all([
-            axios.get('http://localhost:8000/api/v1/admin/faculties', {
+            axios.get(`${API_URL}/admin/faculties`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             }),
-            axios.get('http://localhost:8000/api/v1/admins/students', {
+            axios.get(`${API_URL}/admins/students`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -56,7 +57,7 @@ function AddPayment() {
 
     const onSubmit = (data) => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.post('http://localhost:8000/api/v1/admin/payment-logs/add', data, {
+        axios.post(`${API_URL}/admin/payment-logs/add`, data, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }

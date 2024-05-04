@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import InputField from '../components/InputField';
 import axios from 'axios';
 import { refreshToken } from '../services/authServices';
+import API_URL from '../api';
 
 const AdminDashboard = () => {
     useEffect(() => {
@@ -34,29 +35,42 @@ const AdminDashboard = () => {
     const [faculties, setFaculties] = useState(null);
     const [students, setStudents] = useState(null);
 
+    const [amountCollected, setAmountCollected] = useState(null);
+
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
         Promise.all([
-            axios.get('http://localhost:8000/api/v1/admins/teachers',  {
+            axios.get(`${API_URL}/admins/teachers`,  {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         }),
-        axios.get('http://localhost:8000/api/v1/admin/faculties',  {
+        axios.get(`${API_URL}/admin/faculties`,  {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         }),
-        axios.get('http://localhost:8000/api/v1/admins/students',  {
+        axios.get(`${API_URL}/admins/students`,  {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }),
+        axios.get(`${API_URL}/admin/payment-logs`,  {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
         ])
-        .then(([teachersResponse, facultiesResponse, studentsResponse]) => {
+        .then(([teachersResponse, facultiesResponse, studentsResponse, paymentsResponse]) => {
             setTeachers(teachersResponse.data.data.length);
             setFaculties(facultiesResponse.data.data.length);
             setStudents(studentsResponse.data.data.length);
+            let amount = 0;
+            paymentsResponse.data.data.forEach(payment => {
+                payment.amount = parseInt(payment.amount);
+                amount += payment.amount;
+            });
+            setAmountCollected(amount);
         })
             .catch(error => {
                 console.error(error);
@@ -74,7 +88,7 @@ const AdminDashboard = () => {
                         <Card title="Total Students" imgSrc='/images/student.png' number={students} />
                         <Card title="Faculties" imgSrc='/images/education.png' number={faculties} />
                         <Card title="Total Teachers" imgSrc='/images/teacher.png' number={teachers} />
-                        <Card title="Money Collected" imgSrc='/images/money.png' number='40,00,000' />
+                        <Card title="Money Collected" imgSrc='/images/money.png' number={amountCollected} />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4">
                         <div className="col-span-2 bg-white">

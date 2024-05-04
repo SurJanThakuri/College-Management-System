@@ -7,6 +7,7 @@ import InputField from '../components/InputField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { refreshToken } from '../services/authServices';
+import API_URL from '../api';
 
 function AddFaculty() {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -34,7 +35,7 @@ function AddFaculty() {
             formData.append('coverImage', coverImage);
             
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axios.post('http://localhost:8000/api/v1/admin/faculties/add', formData, {
+            const response = await axios.post(`${API_URL}/admin/faculties/ad`, formData, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     'Content-Type': 'multipart/form-data'

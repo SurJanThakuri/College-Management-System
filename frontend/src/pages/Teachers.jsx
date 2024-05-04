@@ -7,6 +7,7 @@ import Button from '../components/Button';
 import SearchBar from '../components/SearchBar';
 import axios from 'axios';
 import { refreshToken } from '../services/authServices';
+import API_URL from '../api';
 
 function Teachers() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -26,7 +27,7 @@ function Teachers() {
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
-        axios.get('http://localhost:8000/api/v1/admins/teachers',
+        axios.get(`${API_URL}/admins/teachers`,
         {
             headers: {
                 Authorization: `Bearer ${token}`

@@ -5,6 +5,7 @@ import Button from './Button';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import { refreshToken } from '../services/authServices';
+import API_URL from '../api';
 
 const CourseStructImgPopup = ({ data, onClose }) => {
     const { _id } = data;
@@ -25,7 +26,7 @@ const CourseStructImgPopup = ({ data, onClose }) => {
         const formData = new FormData();
         formData.append('courseStructureImg', data.courseStructureImg[0]); 
 
-        axios.patch('http://localhost:8000/api/v1/admin/faculties/update-course-struct-image/' + _id, formData, {
+        axios.patch(`${API_URL}/admin/faculties/update-course-struct-image/` + _id, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'

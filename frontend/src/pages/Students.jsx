@@ -7,14 +7,14 @@ import ReactPaginate from 'react-paginate';
 import SearchBar from '../components/SearchBar';
 import axios from 'axios';
 import { refreshToken } from '../services/authServices';
-
+import API_URL from '../api';
 
 function Students() {
     const [students, setStudents] = useState([]);
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
-        axios.get('http://localhost:8000/api/v1/admins/students',
+        axios.get(`${API_URL}/admins/students`,
         {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -40,7 +40,7 @@ function Students() {
 
     const handleDelete = (id) => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.delete(`http://localhost:8000/api/v1/admins/delete-student/${id}`, {
+        axios.delete(`${API_URL}/admins/delete-student/${id}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -64,12 +64,12 @@ function Students() {
         setOffset(0); // Reset offset when search query changes
     };
 
-    const filteredStudents = students.filter(student =>
+    const filteredStudents = Array.isArray(students) ? students.filter(student =>
         student.name.toLowerCase().includes(searchQuery.toLowerCase())
-        || student.faculty.toLowerCase().includes(searchQuery.toLowerCase())
+        || student.faculty.name.toLowerCase().includes(searchQuery.toLowerCase())
         || student.address.toLowerCase().includes(searchQuery.toLowerCase())
         || student.email.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    ) : [];
 
     const pageCount = Math.ceil(filteredStudents.length / perPage);
 

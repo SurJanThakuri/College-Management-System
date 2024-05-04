@@ -7,6 +7,7 @@ import InputField from '../components/InputField';
 import axios from 'axios';
 import { refreshToken } from '../services/authServices';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../api';
 
 function AddStudent() {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -26,7 +27,7 @@ function AddStudent() {
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.get('http://localhost:8000/api/v1/admin/faculties', {
+        axios.get(`${API_URL}/admin/faculties`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 'Content-Type': 'multipart/form-data'
@@ -42,7 +43,7 @@ function AddStudent() {
 
     const onSubmit = (data) => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.post('http://localhost:8000/api/v1/admins/student/register', data, {
+        axios.post(`${API_URL}/admins/student/register`, data, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -149,6 +150,14 @@ function AddStudent() {
                                     className="mb-2"
                                 />
                                 {errors.nationality && <span className='text-red-600'>This field is required</span>}
+                                <InputField
+                                    type="text"
+                                    label="Total Fee:"
+                                    placeholder="Total Fee"
+                                    {...register("totalFee", { required: true })}
+                                    className="mb-2"
+                                />
+                                {errors.totalFee && <span className='text-red-600'>This field is required</span>}
                                 <InputField
                                     type="text"
                                     label="Emergency Contact:"

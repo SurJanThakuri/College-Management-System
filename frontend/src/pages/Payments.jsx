@@ -7,6 +7,7 @@ import ReactPaginate from 'react-paginate';
 import SearchBar from '../components/SearchBar';
 import axios from 'axios';
 import { refreshToken } from '../services/authServices';
+import API_URL from '../api';
 
 function Payments() {
     const [logs, setLogs] = useState([]);
@@ -23,7 +24,7 @@ function Payments() {
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.get('http://localhost:8000/api/v1/admin/payment-logs', {
+        axios.get(`${API_URL}/admin/payment-logs`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -39,7 +40,7 @@ function Payments() {
 
         const handleDelete = (id) => {
             const accessToken = localStorage.getItem('accessToken');
-            axios.delete(`http://localhost:8000/api/v1/admin/payment-logs/delete/${id}`, {
+            axios.delete(`${API_URL}/admin/payment-logs/delete/${id}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`
                 }

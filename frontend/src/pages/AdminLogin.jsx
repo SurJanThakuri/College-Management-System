@@ -7,6 +7,8 @@ import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
 import {useDispatch} from "react-redux"
 import { login as authLogin } from '../store/authSlice'
+import API_URL from '../api';
+import { Link } from 'react-router-dom';
 
 const AdminLogin = () => {
     const navigate = useNavigate()
@@ -19,13 +21,12 @@ const AdminLogin = () => {
     const [error, setError] = useState('');
 
     const login = (data) => {
-        axios.post('http://localhost:8000/api/v1/admins/login', data)
+        axios.post(`${API_URL}/admins/login`, data)
             .then(response => {
                 const { accessToken, refreshToken } = response.data.data;
                 dispatch(authLogin({ accessToken }));
                 localStorage.setItem('accessToken', accessToken);
                 const accessTokenExpiry = new Date();
-                // set expiry time of 1 minute in access token
                 accessTokenExpiry.setDate(accessTokenExpiry.getDate() + 1);
                 localStorage.setItem('accessTokenExpiry', accessTokenExpiry.toISOString());
 
@@ -77,6 +78,20 @@ const AdminLogin = () => {
                                 type="submit"
                                 className="w-40"
                             >Login</Button>
+                        </div>
+                        <div className="flex justify-center items-center mt-4">
+                        <Link to="/student-login">
+                            <button
+                                
+                                className="text-sm text-[#35344E] hover:text-[#4287f5] transition-colors duration-200"
+                            >Student Login</button>
+                            </Link>
+                            <span className="mx-2">|</span>
+                            <Link to="/teacher-login">
+                            <button
+                                className="text-sm text-[#35344E] hover:text-[#4287f5] transition-colors duration-200"
+                            >Teacher Login</button>
+                            </Link>
                         </div>
                     </form>
                 </div>

@@ -7,7 +7,7 @@ import SearchBar from '../components/SearchBar';
 import ReactPaginate from 'react-paginate';
 import axios from 'axios';
 import { refreshToken } from '../services/authServices';
-
+import API_URL from '../api';
 
 function NoticeList() {
     const [notices, setNotices] = useState([]);
@@ -26,7 +26,7 @@ function NoticeList() {
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.get('http://localhost:8000/api/v1/admin/notices', {
+        axios.get(`${API_URL}/admin/notices`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -42,7 +42,7 @@ function NoticeList() {
 
     const handleDelete = (id) => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.delete(`http://localhost:8000/api/v1/admin/notices/delete/${id}`, {
+        axios.delete(`${API_URL}/admin/notices/delete/${id}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }

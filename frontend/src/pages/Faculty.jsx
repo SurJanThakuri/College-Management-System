@@ -6,6 +6,7 @@ import Button from '../components/Button'
 import axios from 'axios'
 import CourseStructImgPopup from '../components/CourseStructImgPopup';
 import { refreshToken } from '../services/authServices'
+import API_URL from '../api';
 
 function Faculty() {
     const { id } = useParams();
@@ -34,7 +35,7 @@ function Faculty() {
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.get(`http://localhost:8000/api/v1/admin/faculties/${id}`, {
+        axios.get(`${API_URL}/admin/faculties/${id}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -53,7 +54,7 @@ function Faculty() {
 
     const handleDelete = () => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.delete(`http://localhost:8000/api/v1/admin/faculties/delete/${id}`, {
+        axios.delete(`${API_URL}/admin/faculties/delete/${id}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }

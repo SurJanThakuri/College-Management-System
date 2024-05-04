@@ -436,7 +436,8 @@ const getStudentById = asyncHandler(async (req, res) => {
         admissionYear: student.admissionYear,
         guardianName: student.guardianName,
         guardianRelation: student.guardianRelation,
-        guardianPhone: student.guardianPhone
+        guardianPhone: student.guardianPhone,
+        totalFee: student.totalFee
     };
     return res.status(200).json(
         new ApiResponse(200, studentData, "Student data fetched successfully")
@@ -465,7 +466,8 @@ const getAllStudents = asyncHandler(async (req, res) => {
                 admissionYear: student.admissionYear,
                 guardianName: student.guardianName,
                 guardianRelation: student.guardianRelation,
-                guardianPhone: student.guardianPhone
+                guardianPhone: student.guardianPhone,
+                totalFee: student.totalFee
             };
         });
         return res.status(200).json(
@@ -480,10 +482,10 @@ const getAllStudents = asyncHandler(async (req, res) => {
 
 const registerStudent = asyncHandler(async (req, res) => {
     // get student details from frontend
-    const { name, email, address, password, phone, shift, dob, gender, nationality, faculty, rollNo, emergencyContact, bloodGroup, admissionYear, guardianName, guardianRelation, guardianPhone } = req.body
+    const { name, email, address, password, phone, shift, dob, gender, nationality, faculty, rollNo, emergencyContact, bloodGroup, admissionYear, guardianName, guardianRelation, guardianPhone, totalFee } = req.body
 
     // validation - not empty
-    if ([name, email, address, password, phone, shift, dob, gender, nationality, faculty, rollNo, emergencyContact, bloodGroup, admissionYear, guardianName, guardianRelation, guardianPhone].some((field) => field?.trim() === "")) {
+    if ([name, email, address, password, phone, shift, dob, gender, nationality, faculty, rollNo, emergencyContact, bloodGroup, admissionYear, guardianName, guardianRelation, guardianPhone, totalFee].some((field) => field?.trim() === "")) {
         throw new ApiError(400, "All fields are required")
     }
 
@@ -511,7 +513,8 @@ const registerStudent = asyncHandler(async (req, res) => {
         admissionYear,
         guardianName,
         guardianRelation,
-        guardianPhone
+        guardianPhone,
+        totalFee
     })
 
     // check for student creation - remove password and refresh token field from response
@@ -529,9 +532,9 @@ const registerStudent = asyncHandler(async (req, res) => {
 
 const updateStudentDetails = asyncHandler(async (req, res) => {
     const {id} = req.params;
-    const { name, email, phone, address, shift, dob, gender, nationality, faculty, rollNo, emergencyContact, bloodGroup, admissionYear, guardianName, guardianRelation, guardianPhone } = req.body;
+    const { name, email, phone, address, shift, dob, gender, nationality, faculty, rollNo, emergencyContact, bloodGroup, admissionYear, guardianName, guardianRelation, guardianPhone, totalFee } = req.body;
 
-    if (!name || !email || !phone || !address || !shift || !dob || !gender  || !nationality || !faculty || !rollNo || !emergencyContact || !bloodGroup || !admissionYear || !guardianName || !guardianRelation || !guardianPhone) {
+    if (!name || !email || !phone || !address || !shift || !dob || !gender  || !nationality || !faculty || !rollNo || !emergencyContact || !bloodGroup || !admissionYear || !guardianName || !guardianRelation || !guardianPhone || !totalFee) {
         throw new ApiError(400, "All fields are required")
     }
 
@@ -554,7 +557,8 @@ const updateStudentDetails = asyncHandler(async (req, res) => {
                 admissionYear: admissionYear,
                 guardianName: guardianName,
                 guardianRelation: guardianRelation,
-                guardianPhone: guardianPhone
+                guardianPhone: guardianPhone,
+                totalFee: totalFee
             }
         },
         { new: true }

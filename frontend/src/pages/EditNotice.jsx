@@ -9,6 +9,7 @@ import TextAreaField from '../components/TextAreaField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { refreshToken } from '../services/authServices';
+import API_URL from '../api';
 
 function EditNotice() {
 
@@ -30,7 +31,7 @@ function EditNotice() {
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
-        axios.get(`http://localhost:8000/api/v1/admin/notices/${id}`, {
+        axios.get(`${API_URL}/admin/notices/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -49,7 +50,7 @@ function EditNotice() {
 
     const onSubmit = (data) => {
         const token = localStorage.getItem('accessToken');
-        axios.patch(`http://localhost:8000/api/v1/admin/notices/update/${id}`, data, {
+        axios.patch(`${API_URL}/admin/notices/update/${id}`, data, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

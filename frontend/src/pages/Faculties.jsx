@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import Button from '../components/Button';
 import axios from 'axios';
 import { refreshToken } from '../services/authServices';
-
+import API_URL from '../api';
 
 function Faculties() {
     const [faculties, setFaculties] = useState();
@@ -23,7 +23,7 @@ function Faculties() {
 
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.get('http://localhost:8000/api/v1/admin/faculties', {
+        axios.get(`${API_URL}/admin/faculties`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }

@@ -8,6 +8,7 @@ import TextAreaField from '../components/TextAreaField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { refreshToken } from '../services/authServices';
+import API_URL from '../api';
 
 function AddNotice() {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -27,7 +28,7 @@ function AddNotice() {
     const onSubmit = (data) => {
 
         const accessToken = localStorage.getItem('accessToken');
-        axios.post('http://localhost:8000/api/v1/admin/notices/add', data, {
+        axios.post(`${API_URL}/admin/notices/add`, data, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }

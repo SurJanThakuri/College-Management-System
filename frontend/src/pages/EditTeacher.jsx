@@ -7,6 +7,7 @@ import InputField from '../components/InputField';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import API_URL from '../api';
 
 function EditTeacher() {
     const { register, handleSubmit, setValue, formState: { errors } } = useForm();
@@ -28,7 +29,7 @@ function EditTeacher() {
     
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.get(`http://localhost:8000/api/v1/admins/teachers/${id}`, {
+        axios.get(`${API_URL}/admins/teachers/${id}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -55,7 +56,7 @@ function EditTeacher() {
     
     const onSubmit = (data) => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.patch(`http://localhost:8000/api/v1/admins/update-teacher/${id}`, data, {
+        axios.patch(`${API_URL}/admins/update-teacher/${id}`, data, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }

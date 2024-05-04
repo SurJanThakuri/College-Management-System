@@ -5,6 +5,7 @@ import Button from './Button';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import { refreshToken } from '../services/authServices';
+import API_URL from '../api';
 
 const CoverImagePopup = ({ data, onClose }) => {
     const { _id } = data;
@@ -26,7 +27,7 @@ const CoverImagePopup = ({ data, onClose }) => {
         const formData = new FormData();
         formData.append('coverImage', data.coverImage[0]); 
 
-        axios.patch('http://localhost:8000/api/v1/admin/faculties/update-cover-image/' + _id, formData, {
+        axios.patch(`${API_URL}/admin/faculties/update-cover-image/` + _id, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'

@@ -7,41 +7,14 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { refreshToken } from '../services/authServices';
 import Button from '../components/Button';
-
+import API_URL from '../api';
 
 function Student() {
-    const fee = [
-        {
-            semester: 'Semester 1',
-            fees: 2000,
-            due: 1000,
-            paymentLogs: [
-                { date: '2023-01-01', description: 'Payment - 1000' },
-                { date: '2023-02-01', description: 'Payment - 1000' }
-            ]
-        },
-        {
-            semester: 'Semester 2',
-            fees: 2200,
-            due: 2200,
-            paymentLogs: [
-                { date: '2023-03-01', description: 'Payment received' },
-                { date: '2023-04-01', description: 'Payment received' },
-                { date: '2023-05-01', description: 'Payment received' }
-            ]
-        },
-        {
-            semester: 'Semester 3',
-            fees: 2100,
-            due: 2100,
-            paymentLogs: [
-                { date: '2023-06-01', description: 'Payment received' }
-            ]
-        },
-    ];
+
     const { id } = useParams();
 
     const [student, setStudent] = useState({});
+    const [fee, setFee] = useState([]);
 
     const navigate = useNavigate();
 
@@ -57,10 +30,31 @@ function Student() {
 
 
     useEffect(() => {
+        const fetchFee = async () => {
+            const accessToken = localStorage.getItem('accessToken');
+            try {
+                const response = await axios.get(`${API_URL}/admin/payment-logs/student/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                });
+                setFee(response.data.data);
+                console.log(response.data.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchFee();
+    }, [id]);
+
+    console.log(fee);
+
+
+    useEffect(() => {
         const fetchStudent = async () => {
             const accessToken = localStorage.getItem('accessToken');
             try {
-                const response = await axios.get(`http://localhost:8000/api/v1/admins/students/${id}`, {
+                const response = await axios.get(`${API_URL}/admins/students/${id}`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`
                     }
@@ -75,7 +69,7 @@ function Student() {
 
     const handleDelete = () => {
         const accessToken = localStorage.getItem('accessToken');
-        axios.delete(`http://localhost:8000/api/v1/admins/delete-student/${id}`, {
+        axios.delete(`${API_URL}/admins/delete-student/${id}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -124,6 +118,9 @@ function Student() {
                             <p className="pt-4 text-base">
                                 <strong>Gender:</strong> {student.gender}
                             </p>
+                            <p className="pt-4 text-base">
+                                <strong>Total Fee:</strong> {student.totalFee}
+                            </p>
 
                             <p className="pt-4 text-base">
                                 <strong>Nationality:</strong> {student.nationality}
@@ -157,8 +154,8 @@ function Student() {
                             </p>
                         </div>
                         <div className="pt-4 text-base">
-                            <div className='font-bold mb-4 text-lg'>Fee Details Table</div>
-                            <FeeDetailsTable data={fee} />
+                            <div className='font-bold mb-4 text-xl'>Fee Details Table</div>
+                            <FeeDetailsTable fees={fee} totalFee={student.totalFee} />
                         </div>
                     </div>
                 </div>

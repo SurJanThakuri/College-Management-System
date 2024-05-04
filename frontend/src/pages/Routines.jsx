@@ -21,8 +21,8 @@ function Routines() {
                         <div className="p-4 bg-[#FFFFFF]">
                             <div className="flex items-center justify-between">
                                 <h1 className="text-2xl font-bold mb-4">Faculty Routines</h1>
-                                <Link to="/admin-dashboard/routines/class-times">
-                                    <Button children="Class Timing" type='button' className='px-4' />
+                                <Link to="/admin-dashboard/routines/add-routine">
+                                    <Button children="Add Routine" type='button' className='px-4' />
                                 </Link>
                             </div>
                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

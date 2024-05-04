@@ -6,6 +6,7 @@ import Sidebar from '../components/Sidebar';
 import Button from '../components/Button';
 import { Link, useNavigate } from 'react-router-dom';
 import { refreshToken } from '../services/authServices';
+import API_URL from '../api';
 
 function Teacher() {
     const { id } = useParams();
@@ -25,7 +26,7 @@ function Teacher() {
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
-        axios.get(`http://localhost:8000/api/v1/admins/teachers/${id}`, {
+        axios.get(`${API_URL}/admins/teachers/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -44,7 +45,7 @@ function Teacher() {
 
     const handleDelete = () => {
         const token = localStorage.getItem('accessToken');
-        axios.delete(`http://localhost:8000/api/v1/admins/delete-teacher/${id}`, {
+        axios.delete(`${API_URL}/admins/delete-teacher/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

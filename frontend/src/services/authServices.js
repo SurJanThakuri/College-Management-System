@@ -10,7 +10,7 @@ export const refreshToken = async () => {
             throw new Error('No refresh token found');
         }
 
-        const response = await axios.post('http://localhost:8000/api/v1/admins/refresh-token', {
+        const response = await axios.post(`${API_URL}/admins/refresh-token`, {
             refreshToken,
         });
 

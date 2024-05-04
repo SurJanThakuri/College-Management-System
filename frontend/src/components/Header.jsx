@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { logout } from '../store/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { refreshToken } from '../services/authServices';
+import API_URL from '../api';
 
 function Header({title}) {
     const [showPopup, setShowPopup] = useState(false);
@@ -26,7 +27,7 @@ function Header({title}) {
     const token = localStorage.getItem('accessToken');
 
     if (token) {
-        axios.get('http://localhost:8000/api/v1/admins/current-user', {
+        axios.get(`${API_URL}/admins/current-user`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -60,7 +61,7 @@ function Header({title}) {
     const handleLogoutConfirm = () => {
         const accessToken = localStorage.getItem('accessToken');
 
-        axios.post('http://localhost:8000/api/v1/admins/logout', null, {
+        axios.post('${API_URL}/admins/logout', null, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }

@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import Button from './Button';
 import axios from 'axios';
 import { refreshToken } from '../services/authServices';
+import API_URL from '../api';
 
 const ProfilePicturePopup = ({ data, onClose }) => {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -24,7 +25,7 @@ const ProfilePicturePopup = ({ data, onClose }) => {
         const formData = new FormData();
         formData.append('profilePicture', data.profilePicture[0]); // Change 'image' to 'profilePicture'
 
-        axios.patch('http://localhost:8000/api/v1/admins/profile-picture', formData, {
+        axios.patch(`${API_URL}/admins/profile-picture`, formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'

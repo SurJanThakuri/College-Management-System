@@ -14,6 +14,23 @@ const getPaymentLogById = asyncHandler( async(req, res) => {
     )
 });
 
+//write function to get all payment logs with specific student id where studentName is in the paymentLog model
+
+const getPaymentLogsByStudentId = asyncHandler(async (req, res) => {
+    try {
+        const { studentId } = req.params;
+        const paymentLogs = await PaymentLog.find({ studentId }).populate('studentName', 'id name').populate('faculty', 'id name');
+        return res.status(200).json(
+            new ApiResponse(200, paymentLogs, "All payment logs data fetched successfully for the student")
+        );
+    } catch (error) {
+        return res.status(500).json(
+            new ApiResponse(500, null, "Internal Server Error")
+        );
+    }
+});
+
+
 const getAllPaymentLogs = asyncHandler(async (req, res) => {
     try {
         const paymentLogs = await PaymentLog.find({}).populate('studentName', 'id name').populate('faculty', 'id name');
@@ -83,6 +100,7 @@ const deletePaymentLog = asyncHandler(async (req, res) => {
 
 export {
     getPaymentLogById,
+    getPaymentLogsByStudentId,
     getAllPaymentLogs,
     addPaymentLog,
     updatePaymentLogDetails,
