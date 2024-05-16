@@ -61,24 +61,21 @@ function Header({title}) {
     const handleLogoutConfirm = () => {
         const accessToken = localStorage.getItem('accessToken');
 
-        axios.post('${API_URL}/admins/logout', null, {
+        axios.post(`${API_URL}/admins/logout`, null, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
         })
         .then(response => {
             dispatch(logout());
-            // remove the session created
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
-            //remove the expiry date of both tokens
             localStorage.removeItem('accessTokenExpiry');
             localStorage.removeItem('refreshTokenExpiry');
             navigate("/admin-login")
         })
         .catch(error => {
             console.error('Logout failed:', error);
-            // Optionally, you can handle the error (e.g., display an error message)
         });
 
         setShowLogoutPopup(false);

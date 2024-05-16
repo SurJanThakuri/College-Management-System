@@ -1,10 +1,12 @@
 // authServices.js
+import API_URL from '../api';
 
 import axios from 'axios';
 
 export const refreshToken = async () => {
     try {
         const refreshToken = localStorage.getItem('refreshToken');
+        console.log(refreshToken);
 
         if (!refreshToken) {
             throw new Error('No refresh token found');

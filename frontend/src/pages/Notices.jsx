@@ -33,6 +33,7 @@ function NoticeList() {
         })
             .then(response => {
                 setNotices(response.data.data);
+                console.log(response.data.data._id);
             })
             .catch(error => {
                 console.log(error);

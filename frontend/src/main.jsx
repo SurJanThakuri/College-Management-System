@@ -35,6 +35,7 @@ import EditAdmin from './pages/EditAdmin.jsx'
 import store from './store/store.js'
 import AuthLayout from './components/AuthLayout.jsx'
 import AddRoutine from './pages/AddRoutine.jsx'
+import EditRoutine from './pages/EditRoutine.jsx'
 
 const router = createBrowserRouter([
     {
@@ -250,15 +251,6 @@ const router = createBrowserRouter([
                 )
             },
             {
-                path: "/admin-dashboard/notices/1/view",
-                element: (
-                    <AuthLayout authentication>
-                        {" "}
-                        <Complaint />
-                    </AuthLayout>
-                )
-            },
-            {
                 path: "/admin-dashboard/complaints",
                 element: (
                     <AuthLayout authentication>
@@ -277,7 +269,7 @@ const router = createBrowserRouter([
                 )
             },
             {
-                path: "/admin-dashboard/routines/BCA",
+                path: "/admin-dashboard/routines/:id",
                 element: (
                     <AuthLayout authentication>
                         {" "}
@@ -291,6 +283,15 @@ const router = createBrowserRouter([
                 <AuthLayout authentication>
                     {" "}
                     <AddRoutine />
+                </AuthLayout>
+            )
+           },
+           {
+            path: "/admin-dashboard/routines/:id/edit",
+            element: (
+                <AuthLayout authentication>
+                    {" "}
+                    <EditRoutine />
                 </AuthLayout>
             )
            },

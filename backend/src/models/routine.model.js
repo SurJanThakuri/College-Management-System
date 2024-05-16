@@ -16,4 +16,3 @@ const routineSchema = new Schema({
     })
 
 export const Routine = mongoose.model("Routine", routineSchema)
-

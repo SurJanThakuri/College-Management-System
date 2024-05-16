@@ -9,7 +9,7 @@ import {Routine} from "../models/routine.model.js"
 
 const getRoutineById = asyncHandler(async(req, res) => {
     const { id } = req.params
-    const routine = await Routine.findById(id)
+    const routine = await Routine.findById(id).populate('faculty', 'id name');
     if (!routine) {
         throw new ApiError(404, "Routine not found")
     }
@@ -20,7 +20,7 @@ const getRoutineById = asyncHandler(async(req, res) => {
 
 const getAllRoutines = asyncHandler(async (req, res) => {
     try {
-        const routines = await Faculty.find({});
+        const routines = await Routine.find({}).populate('faculty', 'name');
         return res.status(200).json(
             new ApiResponse(200, routines, "All routines data fetched successfully")
         )
@@ -38,7 +38,7 @@ const addRoutine = asyncHandler(async (req, res) => {
 
     const routineImageLocalPath = req.files?.routineImage[0]?.path;
     if (!routineImageLocalPath) {
-        throw new ApiError(400, "Course Structure Image is required")
+        throw new ApiError(400, "Routine Image is required")
     }
 
     const routineImage = await uploadOnCloudinary(routineImageLocalPath)
@@ -84,80 +84,24 @@ const updateRoutineDetails = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, faculty, "Faculty details updated successfully"))
 })
 
-const deleteFaculty = asyncHandler(async (req, res) => {
+const deleteRoutine = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const faculty = await Faculty.findByIdAndDelete(id);
-    if (!faculty) {
-        throw new ApiError(404, "Faculty not found");
+    const routine = await Routine.findByIdAndDelete(id);
+    if (!routine) {
+        throw new ApiError(404, "Routine not found");
     }
     return res
         .status(200)
-        .json(new ApiResponse(200, faculty, "Faculty deleted successfully"));
+        .json(new ApiResponse(200, routine, "Routine deleted successfully"));
 
 });
 
-const updateCoverImage = asyncHandler(async (req, res) => {
-    const coverImageLocalPath = req.file?.path
-
-    if (!coverImageLocalPath) {
-        throw new ApiError(400, "Cover Image is missing")
-    }
-
-    const coverImage = await uploadOnCloudinary(coverImageLocalPath)
-
-
-    if (!coverImage.url) {
-        throw new ApiError(400, "Error while uploading on cloudinary")
-    }
-    const { id } = req.params
-    const updatedCoverImage = await Faculty.findByIdAndUpdate(
-        id,
-        {
-            $set: {
-                coverImage: coverImage.url
-            }
-        },
-        { new: true }
-    )
-    return res
-        .status(200)
-        .json(new ApiResponse(200, updatedCoverImage, "Cover Image updated successfully"))
-})
-const updateCourseStructImg = asyncHandler(async (req, res) => {
-    const courseStructImgLocalPath = req.file?.path
-
-    if (!courseStructImgLocalPath) {
-        throw new ApiError(400, "Course Structure Image is missing")
-    }
-
-    const courseStructImg = await uploadOnCloudinary(courseStructImgLocalPath)
-
-
-    if (!courseStructImg.url) {
-        throw new ApiError(400, "Error while uploading on cloudinary")
-    }
-    const { id } = req.params
-    const updatedCourseStructImg = await Faculty.findByIdAndUpdate(
-        id,
-        {
-            $set: {
-                courseStructureImg: courseStructImg.url
-            }
-        },
-        { new: true }
-    )
-    return res
-        .status(200)
-        .json(new ApiResponse(200, updatedCourseStructImg, "Cover Image updated successfully"))
-})
 
 export {
-    getFacultyById,
-    getAllFaculties,
-    addFaculty,
-    updateFacultyDetails,
-    deleteFaculty,
-    updateCoverImage,
-    updateCourseStructImg
+    getRoutineById,
+    getAllRoutines,
+    addRoutine,
+    updateRoutineDetails,
+    deleteRoutine
 }

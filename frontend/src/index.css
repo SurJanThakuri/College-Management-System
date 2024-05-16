@@ -11,3 +11,8 @@
 html {
     scroll-behavior: smooth;
   }
+
+img{
+    display: block;
+    max-width: 100%;
+}

@@ -35,7 +35,7 @@ function AddFaculty() {
             formData.append('coverImage', coverImage);
             
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axios.post(`${API_URL}/admin/faculties/ad`, formData, {
+            const response = await axios.post(`${API_URL}/admin/faculties/add`, formData, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     'Content-Type': 'multipart/form-data'

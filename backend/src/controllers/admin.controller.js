@@ -129,7 +129,7 @@ const logoutAdmin = asyncHandler(async(req, res) => {
     req.admin._id,
     {
         $set: {
-            refreshToken: 1 // this removes the field from document
+            refreshToken: 1
         }
     },
     {
