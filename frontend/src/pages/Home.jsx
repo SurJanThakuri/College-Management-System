@@ -214,7 +214,7 @@ function Home() {
                                     </div>
                                 </div>
                                 <form className='' onSubmit={handleSubmit(onSubmit)}>
-                                    <div className="flex gap-16 my-4">
+                                    <div className="flex flex-wrap gap-16 my-4">
                                         <InputField
                                             label="Your Name"
                                             name="name"
