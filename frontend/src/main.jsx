@@ -24,8 +24,8 @@ import EditStudent from './pages/EditStudent.jsx'
 import Notices from './pages/Notices.jsx'
 import AddNotice from './pages/AddNotice.jsx'
 import EditNotice from './pages/EditNotice.jsx'
-import Complaints from './pages/Complaints.jsx'
-import Complaint from './pages/Complaint.jsx'
+// import Complaints from './pages/Complaints.jsx'
+// import Complaint from './pages/Complaint.jsx'
 import Payments from './pages/Payments.jsx'
 import AddPayment from './pages/AddPayment.jsx'
 import EditPayment from './pages/EditPayment.jsx'
@@ -250,15 +250,15 @@ const router = createBrowserRouter([
                     </AuthLayout>
                 )
             },
-            {
-                path: "/admin-dashboard/complaints",
-                element: (
-                    <AuthLayout authentication>
-                        {" "}
-                        <Complaints />
-                    </AuthLayout>
-                )
-            },
+            // {
+            //     path: "/admin-dashboard/complaints",
+            //     element: (
+            //         <AuthLayout authentication>
+            //             {" "}
+            //             <Complaints />
+            //         </AuthLayout>
+            //     )
+            // },
             {
                 path: "/admin-dashboard/routines",
                 element: (

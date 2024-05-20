@@ -85,7 +85,7 @@ function Sidebar() {
                     <span className='text-lg hidden lg:block'>Notice</span>
                 </div>
             </NavLink>
-            <NavLink
+            {/* <NavLink
                 to="/admin-dashboard/complaints"
                 className={({ isActive }) =>
                     isActive ? "bg-blue-700 p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white" : "p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white"
@@ -96,7 +96,7 @@ function Sidebar() {
                     <img className='invert h-7 mr-3' src="/images/complain.png" alt="" />
                     <span className='text-lg hidden lg:block'>Complaints</span>
                 </div>
-            </NavLink>
+            </NavLink> */}
             <NavLink
                 to="/admin-dashboard/routines"
                 className={({ isActive }) =>
@@ -185,7 +185,7 @@ function Sidebar() {
                     <span className='text-lg hidden lg:block'>Notice</span>
                 </div>
             </NavLink>
-            <NavLink
+            {/* <NavLink
                 to="/admin-dashboard/complaints"
                 className={({ isActive }) =>
                     isActive ? "bg-blue-700 p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white" : "p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white"
@@ -196,7 +196,7 @@ function Sidebar() {
                     <img className='invert h-7 mr-3' src="/images/complain.png" alt="" />
                     <span className='text-lg hidden lg:block'>Complaints</span>
                 </div>
-            </NavLink>
+            </NavLink> */}
             <NavLink
                 to="/admin-dashboard/routines"
                 className={({ isActive }) =>
