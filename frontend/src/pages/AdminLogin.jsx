@@ -5,7 +5,7 @@ import axios from 'axios';
 import InputField from '../components/InputField';
 import Button from '../components/Button';
 import { useNavigate } from 'react-router-dom';
-import {useDispatch} from "react-redux"
+import { useDispatch } from "react-redux"
 import { login as authLogin } from '../store/authSlice'
 import API_URL from '../api';
 import { Link } from 'react-router-dom';
@@ -79,20 +79,20 @@ const AdminLogin = () => {
                                 className="w-40"
                             >Login</Button>
                         </div>
-                        <div className="flex justify-center items-center mt-4">
-                        <Link to="/student-login">
-                            <button
-                                
-                                className="text-sm text-[#35344E] hover:text-[#4287f5] transition-colors duration-200"
-                            >Student Login</button>
+                        {/* <div className="flex justify-center items-center mt-4">
+                            <Link to="/student-login">
+                                <button
+
+                                    className="text-sm text-[#35344E] hover:text-[#4287f5] transition-colors duration-200"
+                                >Student Login</button>
                             </Link>
                             <span className="mx-2">|</span>
                             <Link to="/teacher-login">
-                            <button
-                                className="text-sm text-[#35344E] hover:text-[#4287f5] transition-colors duration-200"
-                            >Teacher Login</button>
+                                <button
+                                    className="text-sm text-[#35344E] hover:text-[#4287f5] transition-colors duration-200"
+                                >Teacher Login</button>
                             </Link>
-                        </div>
+                        </div> */}
                     </form>
                 </div>
             </div>

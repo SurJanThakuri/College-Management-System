@@ -3,7 +3,7 @@ import InputField from './InputField';
 import { useForm } from 'react-hook-form';
 import Button from './Button';
 import axios from 'axios';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { refreshToken } from '../services/authServices';
 import API_URL from '../api';
 
@@ -13,19 +13,18 @@ const CoverImagePopup = ({ data, onClose }) => {
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     useEffect(() => {
-
         const accessToken = localStorage.getItem('accessToken');
         const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
 
         if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
-             refreshToken();
+            refreshToken();
         }
-        }, []);
-    
+    }, []);
+
     const onSubmit = (data) => {
         const token = localStorage.getItem('accessToken');
         const formData = new FormData();
-        formData.append('coverImage', data.coverImage[0]); 
+        formData.append('coverImage', data.coverImage[0]);
 
         axios.patch(`${API_URL}/admin/faculties/update-cover-image/` + _id, formData, {
             headers: {
@@ -33,12 +32,12 @@ const CoverImagePopup = ({ data, onClose }) => {
                 'Content-Type': 'multipart/form-data'
             }
         })
-        .then(response => {
-            navigate('/admin-dashboard/faculties/' + _id);
-        })
-        .catch(error => {
-            console.error('Failed to update profile picture:', error);
-        });
+            .then(response => {
+                navigate('/admin-dashboard/faculties/' + _id);
+            })
+            .catch(error => {
+                console.error('Failed to update cover image:', error);
+            });
     };
 
     return (
@@ -51,14 +50,20 @@ const CoverImagePopup = ({ data, onClose }) => {
                     </button>
                 </div>
                 <div className="flex flex-col items-center">
-                    <img src={data.coverImage} alt="Profile" className=" w-32 h-24 m-4 sm:w-40 sm:h-32" />
+                    <img src={data.coverImage} alt="Profile" className="w-32 h-24 m-4 sm:w-40 sm:h-32" />
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center mt-6">
                     <div className="flex items-center w-full">
                         <InputField
                             type="file"
                             label="Choose new cover image:"
-                            {...register("coverImage", { required: "Cover Image is required" })}
+                            {...register("coverImage", {
+                                required: "Cover Image is required",
+                                validate: {
+                                    size: value => value[0]?.size < 2000000 || "Image size should be less than 2MB",
+                                    type: value => ['image/jpeg', 'image/png'].includes(value[0]?.type) || "Only JPEG and PNG formats are allowed"
+                                }
+                            })}
                             className="flex-grow"
                         />
                     </div>

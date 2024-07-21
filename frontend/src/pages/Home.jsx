@@ -42,11 +42,11 @@ function Home() {
             <main className='scroll-snap-type-y mandatory'>
                 <div id='home' className="hero-section scroll-snap-start h-[50vh] md:h-[70vh] w-full bg-white bg-[url('/images/smHero.jpg')] bg-cover md:bg-[url('/images/hero.jpg')]" style={{  backgroundSize: 'fit', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }}>
                     <div className="hero-text h-full mx-4 flex flex-col items-center md:items-start justify-center">
-                        <h1 className="text-4xl font-bold cursor-pointer">ipsum dolor</h1>
-                        <h1 className="text-4xl font-bold cursor-pointer">Lorem ipsum do sit</h1>
-                        <h1 className="text-4xl font-bold cursor-pointer">do sit.</h1>
-                        <h2 className='text-lg mt-6 cursor-pointer'> Blanditiis recusandae dignissimos molestiae veniam.</h2>
-                        <h2 className='text-lg cursor-pointer'>amet consectetur adipisicing elit</h2>
+                        <h1 className="text-4xl font-bold cursor-pointer">Empowering Minds,</h1>
+                        <h1 className="text-4xl font-bold cursor-pointer">Enriching Futures Where</h1>
+                        <h1 className="text-4xl font-bold cursor-pointer">Knowledge Shapes Tomorrow</h1>
+                        <h2 className='text-lg mt-6 cursor-pointer'> Transforming Education, Empowering Leaders</h2>
+                        <h2 className='text-lg cursor-pointer'> Join Us on the Path to Excellence</h2>
                         <Button children="Discover More Courses" className='px-8 py-4 rounded-3xl mt-10 transition-all duration-300 hover:shadow-md hover:shadow-gray-400' />
                     </div>
                 </div>
@@ -100,7 +100,7 @@ function Home() {
                                 <h2 className='font-extrabold text-4xl text-wrap'>VS International</h2>
                             </div>
 
-                            <span className='text-gray-500 text-base'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum vitae aspernatur neque atque enim similique omnis possimus dicta culpa libero?</span>
+                            <span className='text-gray-500 text-base'>A premier institution dedicated to fostering academic excellence, innovation, and holistic development. With a commitment to nurturing future leaders through quality education and a supportive learning environment.</span>
                             <img src="/images/signature.png" className='h-12 w-1/4' alt="" />
                             <Button children="Learn More" className='px-8 py-3 w-fit rounded-3xl transition-all duration-300 border-none hover:shadow-md hover:shadow-gray-400' />
                         </div>
@@ -118,7 +118,7 @@ function Home() {
                             </div>
                             <div className='m-6 p-4'>
                                 <span className='bg-purple-100 text-purple-600 px-3 py-1 rounded-full my-4'>Cafeteria</span>
-                                <h2 className='font-extrabold text-2xl my-4'>Lorem ipsum dolor sit amet consectetur adipisicing elit</h2>
+                                <h2 className='font-extrabold text-2xl my-4'>Student enjoying in the cafeteria</h2>
                             </div>
                         </div>
                         <div className="card max-w-80 rounded-3xl shadow-xl h-auto ">
@@ -127,7 +127,7 @@ function Home() {
                             </div>
                             <div className='m-6 p-4'>
                                 <span className='bg-orange-100 text-orange-600 px-3 py-1 rounded-full my-4 cursor-pointer'>Playing</span>
-                                <h2 className='font-extrabold text-2xl my-4 cursor-pointer'>Lorem ipsum dolor sit amet consectetur adipisicing elit</h2>
+                                <h2 className='font-extrabold text-2xl my-4 cursor-pointer'>Student playing games in the game area</h2>
                             </div>
                         </div>
                         <div className="card max-w-80 rounded-3xl shadow-xl h-auto ">
@@ -136,7 +136,7 @@ function Home() {
                             </div>
                             <div className='m-6 p-4'>
                                 <span className='bg-pink-100 text-pink-600 px-3 py-1 rounded-full my-4 cursor-pointer'>Examination</span>
-                                <h2 className='font-extrabold text-2xl my-4 cursor-pointer'>Lorem ipsum dolor sit amet consectetur adipisicing elit</h2>
+                                <h2 className='font-extrabold text-2xl my-4 cursor-pointer'>Student giving examination in the hall</h2>
                             </div>
                         </div>
                         <div className="card max-w-80 rounded-3xl shadow-xl h-auto ">
@@ -145,7 +145,7 @@ function Home() {
                             </div>
                             <div className='m-6 p-4'>
                                 <span className='bg-blue-100 text-blue-600 px-3 py-1 rounded-full my-4 cursor-pointer'>Classroom</span>
-                                <h2 className='font-extrabold text-2xl my-4 cursor-pointer'>Lorem ipsum dolor sit amet consectetur adipisicing elit</h2>
+                                <h2 className='font-extrabold text-2xl my-4 cursor-pointer'>Picture of teacher and students in classroom</h2>
                             </div>
                         </div>
 
@@ -164,21 +164,21 @@ function Home() {
                                     <img className='h-16' src="/images/diploma.png" alt="" />
                                 </div>
                                 <h2 className='font-extrabold text-2xl text-nowrap cursor-pointer'>Academic Support</h2>
-                                <span className='text-gray-600 cursor-pointer'>Lorem ipsum dolor sit amet consectetur adipisicing elit.</span>
+                                <span className='text-gray-600 cursor-pointer'>Our Academic Support services are designed to ensure student's success.</span>
                             </div>
                             <div className="card bg-white text-center hover:shadow-gray-700 hover:shadow-md hover:border-gray-100  transition-all duration-300 ease-in-out max-w-[450px] flex flex-col gap-4 shadow-md p-10 h-70 rounded-md">
                                 <div className="icon flex items-center justify-center">
                                     <img className='h-16' src="/images/promotion.png" alt="" />
                                 </div>
                                 <h2 className='font-extrabold text-2xl text-nowrap cursor-pointer'>Career Assistance</h2>
-                                <span className='text-gray-600 cursor-pointer'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet, corrupti!</span>
+                                <span className='text-gray-600 cursor-pointer'> Guiding students towards professional success with tailored resources & counseling</span>
                             </div>
                             <div className="card bg-white text-center hover:shadow-gray-700 hover:shadow-md hover:border-gray-100 transition-all duration-300 ease-in-out max-w-[450px] flex flex-col gap-4 shadow-md p-10 h-70 rounded-md">
                                 <div className="icon flex items-center justify-center">
                                     <img className='h-16' src="/images/reading.png" alt="" />
                                 </div>
                                 <h2 className='font-extrabold text-2xl text-nowrap cursor-pointer'>Student Life</h2>
-                                <span className='text-gray-600 cursor-pointer'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci.</span>
+                                <span className='text-gray-600 cursor-pointer'>Vibrant campus experiences fostering growth, community, and memorable moments.</span>
                             </div>
                         </div>
 
@@ -256,7 +256,7 @@ function Home() {
                     <div className='md:w-1/4'>
                         <h1 className='font-bold text-lg'>About Us</h1>
                         {/* <img className='h-14' src="/images/vs-logo.png" alt="" /> */}
-                        <p className='text-lg'>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+                        <p className='text-lg'>A premier institution dedicated to fostering academic excellence.</p>
                     </div>
 
                     <div className="follow">

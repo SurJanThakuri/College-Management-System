@@ -103,10 +103,20 @@ function EditFaculty() {
                                 type="text"
                                 label="Name:"
                                 placeholder="Faculty Name"
-                                {...register("name", { required: true })}
+                                {...register("name", { 
+                                    required: "Name is required", 
+                                    minLength: {
+                                        value: 3,
+                                        message: "Name must be at least 3 characters long"
+                                    },
+                                    maxLength: {
+                                        value: 50,
+                                        message: "Name must be less than 50 characters"
+                                    }
+                                })}
                                 className="mb-2"
                             />
-                            {errors.name && <span className='text-red-600'>This field is required</span>}
+                            {errors.name && <span className='text-red-600'>{errors.name.message}</span>}
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
                                     Description:
@@ -116,11 +126,20 @@ function EditFaculty() {
                                     id="description"
                                     rows="4"
                                     placeholder="Faculty Description"
-                                    {...register("description", { required: true })}
+                                    {...register("description",{ 
+                                        required: "Description is required",
+                                        minLength: {
+                                            value: 10,
+                                            message: "Description must be at least 10 characters long"
+                                        },
+                                        maxLength: {
+                                            value: 300,
+                                            message: "Description must be less than 300 characters"
+                                        }
+                                    })}
                                 />
-                                {errors.description && <span className='text-red-600'>This field is required</span>}
-                            </div>
-                            {errors.description && <span>This field is required</span>}
+                                    {errors.description && <span className='text-red-600'>{errors.description.message}</span>}
+                                    </div>
 
                             
 

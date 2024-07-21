@@ -76,29 +76,51 @@ function EditNotice() {
                                 <InputField
                                     type="date"
                                     label="Date:"
-                                    {...register("date", { required: true })}
+                                    {...register("date", { 
+                                        required: "Date is required"
+                                    })}
                                     className="mb-2"
                                 />
-                                {errors.date && <span className='text-red-600'>This field is required</span>}
+                                {errors.date && <span className='text-red-600'>{errors.date.message}</span>}
                                 <InputField
                                     type="text"
                                     label="Title:"
                                     placeholder="Notice Title"
-                                    {...register("title", { required: true })}
+                                    {...register("title",  { 
+                                        required: "Title is required",
+                                        minLength: {
+                                            value: 5,
+                                            message: "Title must be at least 5 characters long"
+                                        },
+                                        maxLength: {
+                                            value: 100,
+                                            message: "Title must be less than 100 characters"
+                                        }
+                                    })}
                                     className="mb-2"
                                 />
-                                {errors.title && <span className='text-red-600'>This field is required</span>}
+                                {errors.title && <span className='text-red-600'>{errors.title.message}</span>}
                                 
                                 <TextAreaField
                                     label="Description:"
                                     placeholder="Notice Description"
                                     defaultValue={notice?.description}
-                                    {...register("description", { required: true })}
+                                    {...register("description", { 
+                                        required: "Description is required",
+                                        minLength: {
+                                            value: 20,
+                                            message: "Description must be at least 20 characters long"
+                                        },
+                                        maxLength: {
+                                            value: 1000,
+                                            message: "Description must be less than 1000 characters"
+                                        }
+                                    })}
                                     className="mb-2 w-full"
                                     rows={3}
                                 />
-                                {errors.description && <span className='text-red-600'>This field is required</span>}
-                               <div>
+                                {errors.description && <span className='text-red-600'>{errors.description.message}</span>}
+                                <div>
                                <Button children="Save Changes" type='submit' className='my-3 px-3' />   
                                </div>
                             </form>

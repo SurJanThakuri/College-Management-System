@@ -13,40 +13,39 @@ function EditAdmin() {
 
     useEffect(() => {
         const token = localStorage.getItem('accessToken');
- 
+
         if (token) {
             axios.get(`${API_URL}/admins/current-user`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
-            .then(response => {
-                setAdminData(response.data.data);
-            })
-            .catch(error => {
-                console.error('Error fetching admin data:', error);
-            });
+                .then(response => {
+                    setAdminData(response.data.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching admin data:', error);
+                });
         }
     }, []);
 
     const onSubmit = (data) => {
         const token = localStorage.getItem('accessToken');
-        
+
         axios.patch(`${API_URL}/admins/update-account`, data, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
-        .then(response => {
-            console.log('Update successful:', response.data);
-            // Optionally, you can redirect the user to another page
-            window.location.href = '/admin-dashboard';
-        })
-        .catch(error => {
-            console.error('Update failed:', error);
-        });
+            .then(response => {
+                console.log('Update successful:', response.data);
+                window.location.href = '/admin-dashboard';
+            })
+            .catch(error => {
+                console.error('Update failed:', error);
+            });
     };
-    
+
 
     return (
         <div className='container min-w-full min-h-screen bg-[#F0F1F3]'>
@@ -69,16 +68,28 @@ function EditAdmin() {
                                                     label="Name:"
                                                     placeholder="Enter the name"
                                                     defaultValue={adminData.name}
-                                                    {...register("name", { required: "Name is required" })}
+                                                    {...register("name", { 
+                                                        required: "Name is required",
+                                                        maxLength: {
+                                                            value: 50,
+                                                            message: "Name cannot exceed 50 characters"
+                                                        }
+                                                    })}
                                                     className="mb-2"
                                                 />
                                                 {errors.name && <span className='text-red-600'>{errors.name.message}</span>}
                                                 <InputField
-                                                    type="text"
+                                                    type="email"
                                                     label="Email:"
                                                     placeholder="Enter the email"
                                                     defaultValue={adminData.email}
-                                                    {...register("email", { required: "Email is required" })}
+                                                    {...register("email", { 
+                                                        required: "Email is required",
+                                                        pattern: {
+                                                            value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+                                                            message: "Email address must be a valid address"
+                                                        }
+                                                    })}
                                                     className="mb-2"
                                                 />
                                                 {errors.email && <span className='text-red-600'>{errors.email.message}</span>}
@@ -88,7 +99,13 @@ function EditAdmin() {
                                                     label="Address:"
                                                     placeholder="Enter the address"
                                                     defaultValue={adminData.address}
-                                                    {...register("address", { required: "Address is required" })}
+                                                    {...register("address", { 
+                                                        required: "Address is required",
+                                                        minLength: {
+                                                            value: 5,
+                                                            message: "Address must be at least 5 characters long"
+                                                        }
+                                                    })}
                                                     className="mb-2"
                                                 />
                                                 {errors.address && <span className='text-red-600'>{errors.address.message}</span>}
@@ -98,7 +115,13 @@ function EditAdmin() {
                                                     label="Phone:"
                                                     placeholder="Enter the phone"
                                                     defaultValue={adminData.phone}
-                                                    {...register("phone", { required: "Phone is required" })}
+                                                    {...register("phone", { 
+                                                        required: "Phone is required",
+                                                        pattern: {
+                                                            value: /^\d{10}$/,
+                                                            message: "Phone number must be 10 digits"
+                                                        }
+                                                    })}
                                                     className="mb-2"
                                                 />
                                                 {errors.phone && <span className='text-red-600'>{errors.phone.message}</span>}

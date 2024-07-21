@@ -331,6 +331,12 @@ const registerTeacher = asyncHandler(async (req, res) => {
         throw new ApiError(409, "Teacher with this email already exists")
     }
 
+    //check if account already exist - phone number
+    const existedTeacherWithNumber = await Teacher.findOne({ phone })
+    if (existedTeacherWithNumber) {
+        throw new ApiError(409, "Teacher with this phone number already exists")
+    }
+
     // check for profile picture
     const profilePictureLocalPath = req.files?.profilePicture[0]?.path;
     if (!profilePictureLocalPath) {
@@ -493,6 +499,11 @@ const registerStudent = asyncHandler(async (req, res) => {
     const existedStudent = await Student.findOne({ email })
     if (existedStudent) {
         throw new ApiError(409, "Student with this email already exists")
+    }
+    // check if account already exists - phone number
+    const existedStudentWithPhone = await Student.findOne({ phone })
+    if (existedStudentWithPhone) {
+        throw new ApiError(409, "Student with this phone number already exists")
     }
 
     // create teacher object - create entry in db

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Button from '../components/Button';
 import Header from '../components/Header';
@@ -11,19 +11,18 @@ import API_URL from '../api';
 
 function AddFaculty() {
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     useEffect(() => {
-
         const accessToken = localStorage.getItem('accessToken');
         const accessTokenExpiry = localStorage.getItem('accessTokenExpiry');
 
         if (!accessToken || !accessTokenExpiry || new Date(accessTokenExpiry) < new Date()) {
-             refreshToken();
+            refreshToken();
         }
-        }, []);
-    const onSubmit = async (data) => {
+    }, []);
 
+    const onSubmit = async (data) => {
         const courseStructureImg = data.courseStructureImg[0];
         const coverImage = data.coverImage[0];
         
@@ -35,7 +34,7 @@ function AddFaculty() {
             formData.append('coverImage', coverImage);
             
             const accessToken = localStorage.getItem('accessToken');
-            const response = await axios.post(`${API_URL}/admin/faculties/add`, formData, {
+            await axios.post(`${API_URL}/admin/faculties/add`, formData, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     'Content-Type': 'multipart/form-data'
@@ -47,7 +46,6 @@ function AddFaculty() {
         } catch (error) {
             console.error('Error adding faculty:', error);
         }
-       
     };
 
     return (
@@ -65,10 +63,21 @@ function AddFaculty() {
                                         type="text"
                                         label="Name:"
                                         placeholder="Faculty Name"
-                                        {...register("name", { required: true })}
+                                        {...register("name", { 
+                                            required: "Name is required", 
+                                            minLength: {
+                                                value: 3,
+                                                message: "Name must be at least 3 characters long"
+                                            },
+                                            maxLength: {
+                                                value: 50,
+                                                message: "Name must be less than 50 characters"
+                                            }
+                                        })}
                                         className="mb-2"
                                     />
-                                    {errors.name && <span className='text-red-600'>This field is required</span>}
+                                    {errors.name && <span className='text-red-600'>{errors.name.message}</span>}
+                                    
                                     <label className="block text-gray-700 text-sm mb-2 mt-2" htmlFor="description">
                                         Description:
                                     </label>
@@ -77,23 +86,48 @@ function AddFaculty() {
                                         id="description"
                                         placeholder="Faculty Description"
                                         rows="4"
-                                        {...register("description", { required: true })}
+                                        {...register("description", { 
+                                            required: "Description is required",
+                                            minLength: {
+                                                value: 10,
+                                                message: "Description must be at least 10 characters long"
+                                            },
+                                            maxLength: {
+                                                value: 300,
+                                                message: "Description must be less than 300 characters"
+                                            }
+                                        })}
                                     />
-                                    {errors.description && <span className='text-red-600'>This field is required</span>}
+                                    {errors.description && <span className='text-red-600'>{errors.description.message}</span>}
+                                    
                                     <InputField
                                         type="file"
                                         label="Course Structure Image:"
-                                        {...register("courseStructureImg", { required: true })}
+                                        {...register("courseStructureImg", { 
+                                            required: "Course Structure Image is required",
+                                            validate: {
+                                                size: value => value[0].size < 2000000 || "File size must be less than 2MB",
+                                                type: value => ['image/jpeg', 'image/png'].includes(value[0].type) || "Only JPEG and PNG formats are allowed"
+                                            }
+                                        })}
                                         className="mb-2"
                                     />
-                                    {errors.courseStructureImg && <span className='text-red-600'>This field is required</span>}
+                                    {errors.courseStructureImg && <span className='text-red-600'>{errors.courseStructureImg.message}</span>}
+                                    
                                     <InputField
                                         type="file"
                                         label="Cover Image:"
-                                        {...register("coverImage", { required: true })}
+                                        {...register("coverImage", { 
+                                            required: "Cover Image is required",
+                                            validate: {
+                                                size: value => value[0].size < 2000000 || "File size must be less than 2MB",
+                                                type: value => ['image/jpeg', 'image/png'].includes(value[0].type) || "Only JPEG and PNG formats are allowed"
+                                            }
+                                        })}
                                         className="mb-2"
                                     />
-                                    {errors.coverImage && <span className='text-red-600'>This field is required</span>}
+                                    {errors.coverImage && <span className='text-red-600'>{errors.coverImage.message}</span>}
+                                    
                                     <div>
                                         <Button children="Add Faculty" type='submit' className='my-3 px-3' />
                                     </div>

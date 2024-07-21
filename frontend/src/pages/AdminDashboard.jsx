@@ -94,7 +94,7 @@ const AdminDashboard = () => {
                         <div className="col-span-2 bg-white">
                             <div className='flex items-center justify-between mx-6'>
                                 <h2 className='font-bold text-2xl'>Calendar</h2>
-                                <Button children="Add Event" className='px-4 mt-2' onClick={() => setShowForm(!showForm)} />
+                                {/* <Button children="Add Event" className='px-4 mt-2' onClick={() => setShowForm(!showForm)} /> */}
                             </div>
                             <hr className='h-1' />
                             <Calender />

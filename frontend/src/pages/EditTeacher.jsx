@@ -14,6 +14,7 @@ function EditTeacher() {
 
     const { id } = useParams();
     const [teacher, setTeacher] = useState(null);
+    const [error, setError] = useState('');
 
     const navigate = useNavigate();
 
@@ -67,8 +68,22 @@ function EditTeacher() {
                 navigate(`/admin-dashboard/teachers/${id}`);
                
             })
-            .catch(error => {
-                console.error('Error updating teacher:', error);
+            .catch(e => {
+                let errorMessage = 'An unexpected error occurred';
+                if (e.response && e.response.data) {
+                    try {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(e.response.data, 'text/html');
+                        const pre = doc.querySelector('pre');
+                        if (pre) {
+                            const fullMessage = pre.textContent;
+                            errorMessage = fullMessage.split('at')[0].replace('Error:', '').trim();
+                        }
+                    } catch (parseError) {
+                        errorMessage = 'An unexpected error occurred while parsing the error message';
+                    }
+                }
+                setError(errorMessage);
             });
     };
 
@@ -145,6 +160,7 @@ function EditTeacher() {
                                 {errors.phone && <span className='text-red-600'>This field is required</span>}
                                 <div>
                                 <Button children="Update Teacher" type='submit' className='my-3 px-3' />
+                                {error && <p className="text-red-600 mt-4">{error}</p>}
                                 </div>
                             </form>
                         </div>

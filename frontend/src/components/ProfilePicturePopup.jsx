@@ -59,7 +59,12 @@ const ProfilePicturePopup = ({ data, onClose }) => {
                         <InputField
                             type="file"
                             label="Choose new profile picture:"
-                            {...register("profilePicture", { required: "Profile picture is required" })} // Change 'image' to 'profilePicture'
+                            {...register("profilePicture", { required: "Profile picture is required",
+                                validate: {
+                                    size: value => value[0].size < 2000000 || "File size must be less than 2MB",
+                                    type: value => ['image/jpeg', 'image/png'].includes(value[0].type) || "Only JPEG and PNG formats are allowed"
+                                }
+                            })} 
                             className="flex-grow"
                         />
                     </div>
